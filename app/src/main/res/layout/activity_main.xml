@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="rizvanov.dostoevskyassistant.MainActivity">
+    tools:context="rizvanov.dostoevskyassistant.MainActivity"
+    android:background="@android:color/darker_gray">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
