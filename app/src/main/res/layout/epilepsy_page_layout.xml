@@ -10,7 +10,7 @@
         android:id="@+id/epilepsy_page_phonenumber"
         android:layout_centerHorizontal="true"
         android:layout_margin="16dp"
-        android:text="Helper's phone number"
+        android:hint="Номер телефона"
         android:textSize="30dp"
         android:maxLines="1"
         android:textAlignment="center"/>
@@ -22,7 +22,7 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@id/epilepsy_page_phonenumber"
         android:layout_margin="16dp"
-        android:text="Message for the helper"
+        android:hint="Текст сообщения для помощника"
         android:textSize="20dp"/>
 
 </RelativeLayout>
