@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/darker_gray">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/epilepsy_page_phonenumber"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="16dp"
+        android:text="Helper's phone number"
+        android:textSize="30dp"
+        android:maxLines="1"
+        android:textAlignment="center"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/epilepsy_page_messagetext"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/epilepsy_page_phonenumber"
+        android:layout_margin="16dp"
+        android:text="Message for the helper"
+        android:textSize="20dp"/>
+
+</RelativeLayout>
