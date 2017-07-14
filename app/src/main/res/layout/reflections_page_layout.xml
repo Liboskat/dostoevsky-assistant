@@ -27,5 +27,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
+        android:onClick="addPoem"
         android:background="@android:color/black" />
 </RelativeLayout>

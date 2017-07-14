@@ -39,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/character_name"
                 android:layout_margin="16dp"
+                android:id="@+id/character_edit"
                 android:text="Character Description" />
         </RelativeLayout>
 
