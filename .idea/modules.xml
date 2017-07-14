@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/DostoevskyAssistant.iml" filepath="$PROJECT_DIR$/DostoevskyAssistant.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dostoevsky-assistant.iml" filepath="$PROJECT_DIR$/dostoevsky-assistant.iml" />
     </modules>
   </component>
 </project>
