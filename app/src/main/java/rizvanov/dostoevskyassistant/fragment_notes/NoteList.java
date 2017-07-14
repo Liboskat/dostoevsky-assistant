@@ -1,23 +1,132 @@
 package rizvanov.dostoevskyassistant.fragment_notes;
 
 
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.Toast;
+
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import rizvanov.dostoevskyassistant.R;
+import rizvanov.dostoevskyassistant.db.DBHelper;
+import rizvanov.dostoevskyassistant.db.DiaryTable;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by Ильшат on 14.07.2017.
  */
 
-public class NotesList extends Fragment{
+public class NoteList extends Fragment implements NoteListAdapter.OnEventClickListener{
+    private RecyclerView recyclerView;
+    private List<Note> notes;
+    private NoteListAdapter adapter;
+    private DBHelper helper;
+    private DiaryTable diaryTable;
+    private SQLiteDatabase db;
+    private ImageButton recordingButton;
+    protected static final int RESULT_SPEECH = 1;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-
         return inflater.inflate(R.layout.diary_page_layout, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setRetainInstance(true);
+        notes = new ArrayList<>();
+        helper = new DBHelper(this.getContext());
+        db = helper.getWritableDatabase();
+
+        diaryTable = new DiaryTable();
+        notes = diaryTable.getAllNotesFromDb(db);
+        //initNotes();
+
+        adapter = new NoteListAdapter(notes, this);
+
+        recyclerView = (RecyclerView) getActivity().findViewById(R.id.diary_page_recyclerview);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
+        recordingButton = (ImageButton) getActivity().findViewById(R.id.diary_page_addbutton);
+        recordingButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(
+                        RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "ru-RU");
+
+                try {
+                    startActivityForResult(intent, RESULT_SPEECH);
+                } catch (ActivityNotFoundException a) {
+                    Toast t = Toast.makeText(getContext(),
+                            "Ops! Your device doesn't support Speech to Text",
+                            Toast.LENGTH_SHORT);
+                    t.show();
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case RESULT_SPEECH: {
+                if (resultCode == RESULT_OK && null != data) {
+                    ArrayList<String> text = data
+                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+
+                    Calendar c = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd:MM:yyyy");
+                    String strDate = sdf.format(c.getTime());
+
+                    Note note = new Note(text.get(0), strDate, new Date().getTime());
+
+                    notes.add(note);
+                    adapter.notifyItemInserted(notes.size() - 1);
+                    diaryTable.insert(db, note);
+                }
+                break;
+            }
+
+        }
+    }
+
+    @Override
+    public void OnEventClick(Note note) {
+        Intent intent = new Intent(getActivity(), FullNoteActivity.class);
+        intent.putExtra(FullNoteActivity.KEY_NOTE, note);
+
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void OnLongEventClick(Note note) {
+        notes.remove(note);
+        diaryTable.remove(db, note);
     }
 }

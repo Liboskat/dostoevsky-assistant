@@ -19,18 +19,21 @@ public class DiaryTable {
     public static final String COLUMN_NOTE_TEXT = "note_text";
     public static final String COLUMN_NOTE_DATE = "note_date";
     public static final String COLUMN_NOTE_ID = "note_id";
+    public static final String COLUMN_NOTE_TIME_MS = "note_milliseconds";
 
     public static String createTable() {
         return "CREATE TABLE " + DIARY_TABLE_NAME + " ("
                 + COLUMN_NOTE_ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_NOTE_TEXT + " TEXT, " +
-                COLUMN_NOTE_DATE + " TEXT)";
+                COLUMN_NOTE_DATE + " TEXT, " +
+                COLUMN_NOTE_TIME_MS + " INTEGER)";
     }
 
     public void insert(SQLiteDatabase db, Note note) {
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_NOTE_TEXT, note.getText());
         cv.put(COLUMN_NOTE_DATE, note.getDate());
+        cv.put(COLUMN_NOTE_TIME_MS, note.getTime());
         db.insert(DIARY_TABLE_NAME, null, cv);
     }
 
@@ -38,7 +41,8 @@ public class DiaryTable {
         String selectQuery = " SELECT " +
                 COLUMN_NOTE_ID + ", " +
                 COLUMN_NOTE_TEXT + ", "
-                + COLUMN_NOTE_DATE
+                + COLUMN_NOTE_DATE + ", "
+                + COLUMN_NOTE_TIME_MS
                 + " FROM " + DIARY_TABLE_NAME;
         Log.d("DBTag", selectQuery);
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -52,11 +56,15 @@ public class DiaryTable {
                         str = str.concat(cn + " = " + cursor.getString(cursor.getColumnIndex(cn)) + "; ");
                     }
                     Log.d("DBTag", str);
-                    notes.add(new Note(cursor.getString(cursor.getColumnIndex(COLUMN_NOTE_TEXT)), cursor.getString(cursor.getColumnIndex(COLUMN_NOTE_DATE))));
+                    notes.add(new Note(cursor.getString(cursor.getColumnIndex(COLUMN_NOTE_TEXT)), cursor.getString(cursor.getColumnIndex(COLUMN_NOTE_DATE)), cursor.getLong(cursor.getColumnIndex(COLUMN_NOTE_TIME_MS))));
                 } while (cursor.moveToNext());
                 cursor.close();
             }
         }
         return notes;
+    }
+
+    public void remove(SQLiteDatabase db, Note note) {
+        db.delete(DIARY_TABLE_NAME, COLUMN_NOTE_TIME_MS + "=" + note.getTime(), null);
     }
 }
