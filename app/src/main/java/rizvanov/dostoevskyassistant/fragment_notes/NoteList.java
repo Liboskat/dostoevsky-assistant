@@ -17,6 +17,7 @@ public class NotesList extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+
         return inflater.inflate(R.layout.diary_page_layout, container, false);
     }
 }
