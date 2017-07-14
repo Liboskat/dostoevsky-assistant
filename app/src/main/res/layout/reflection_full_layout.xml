@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/character_photo"
                 android:id="@+id/character_name"
-                android:text="CharacterName"
+                android:hint="Имя персонажа"
                 android:textAlignment="center"
                 android:maxLines="1"
                 android:layout_margin="16dp"
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/character_name"
                 android:layout_margin="16dp"
-                android:text="Character Description" />
+                android:hint="Информация о персонаже" />
         </RelativeLayout>
 
     </ScrollView>
