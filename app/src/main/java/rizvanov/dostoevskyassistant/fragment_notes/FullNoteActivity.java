@@ -12,8 +12,9 @@ public class FullNoteActivity extends AppCompatActivity{
     private EditText text;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.diary_element_full_layout);
         text = (EditText) findViewById(R.id.diary_element_full_text);
 
         Note note = new Note("", "", 0);

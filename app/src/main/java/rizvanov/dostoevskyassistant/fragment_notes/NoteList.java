@@ -53,7 +53,6 @@ public class NoteList extends Fragment implements NoteListAdapter.OnEventClickLi
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setRetainInstance(true);
         notes = new ArrayList<>();
         helper = new DBHelper(this.getContext());
         db = helper.getWritableDatabase();
@@ -65,8 +64,8 @@ public class NoteList extends Fragment implements NoteListAdapter.OnEventClickLi
         adapter = new NoteListAdapter(notes, this);
 
         recyclerView = (RecyclerView) getActivity().findViewById(R.id.diary_page_recyclerview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
         recordingButton = (ImageButton) getActivity().findViewById(R.id.diary_page_addbutton);
         recordingButton.setOnClickListener(new View.OnClickListener(){
@@ -104,10 +103,10 @@ public class NoteList extends Fragment implements NoteListAdapter.OnEventClickLi
                     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd:MM:yyyy");
                     String strDate = sdf.format(c.getTime());
 
-                    Note note = new Note(text.get(0), strDate, new Date().getTime());
+                    Note note = new Note(strDate, text.get(0), new Date().getTime());
 
                     notes.add(note);
-                    adapter.notifyItemInserted(notes.size() - 1);
+                    adapter.notifyItemInserted(adapter.getItemCount() - 1);
                     diaryTable.insert(db, note);
                 }
                 break;
