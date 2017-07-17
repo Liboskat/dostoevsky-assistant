@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import rizvanov.dostoevskyassistant.fragment_notes.NotesList;
+import rizvanov.dostoevskyassistant.fragment_notes.NoteList;
 
 /**
  * Created by Ильшат on 11.07.2017.
@@ -30,11 +30,11 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         //Returning the current tabs
         switch (position) {
             case 0:
-                return new NotesList();
+                return new NoteList();
             case 1:
-                return new NotesList();
+                return new NoteList();
             case 2:
-                return new NotesList();
+                return new NoteList();
             default:
                 return null;
         }
