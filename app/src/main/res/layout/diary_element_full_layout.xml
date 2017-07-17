@@ -1,35 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/darker_gray">
 
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:padding="16dp"
-        android:id="@+id/diary_element_full_toolbar">
+        android:layout_gravity="end"
+        android:background="@android:color/white"
+        android:padding="16dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_margin="16dp"
+                android:src="@mipmap/ic_backarrow"
+                android:id="@+id/diary_element_full_backarrow"/>
+
+            <TextView
+                android:id="@+id/diary_element_full_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/note_date"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_centerHorizontal="true"
+                android:layout_toRightOf="@id/diary_element_full_backarrow"
+                android:layout_toEndOf="@id/diary_element_full_backarrow"
+                android:textSize="25sp" />
+        </RelativeLayout>
 
     </android.support.v7.widget.Toolbar>
 
     <ScrollView
+        android:id="@+id/diary_element_full_scroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/diary_element_full_scroll">
+        android:layout_height="match_parent">
 
         <RelativeLayout
+            android:id="@+id/diary_element_full_scroll_relativelayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/diary_element_full_scroll_relativelayout">
+            android:layout_height="wrap_content">
 
             <EditText
+                android:id="@+id/diary_element_full_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/diary_element_full_text"
-                android:text="Full character description"
-                android:textSize="20sp"
-                android:layout_margin="16dp"/>
+                android:layout_margin="16dp"
+                android:hint="@string/note_text"
+                android:textColorHint="@android:color/black"
+                android:textSize="20sp" />
 
         </RelativeLayout>
     </ScrollView>
