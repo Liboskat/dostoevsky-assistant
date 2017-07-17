@@ -83,7 +83,7 @@ public class NoteList extends Fragment implements NoteListAdapter.OnEventClickLi
                     startActivityForResult(intent, RESULT_SPEECH);
                 } catch (ActivityNotFoundException a) {
                     Toast t = Toast.makeText(getContext(),
-                            "Your device doesn't support Speech to Text",
+                            "Великий русский писатель, ваше устройство не поддерживает эту функцию",
                             Toast.LENGTH_SHORT);
                     t.show();
                 }
@@ -94,7 +94,6 @@ public class NoteList extends Fragment implements NoteListAdapter.OnEventClickLi
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Toast.makeText(getContext(), "aaa", Toast.LENGTH_SHORT).show();
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case RESULT_SPEECH: {
