@@ -56,7 +56,7 @@ public class DiaryTable {
                         str = str.concat(cn + " = " + cursor.getString(cursor.getColumnIndex(cn)) + "; ");
                     }
                     Log.d("DBTag", str);
-                    notes.add(new Note(cursor.getString(cursor.getColumnIndex(COLUMN_NOTE_TEXT)), cursor.getString(cursor.getColumnIndex(COLUMN_NOTE_DATE)), cursor.getLong(cursor.getColumnIndex(COLUMN_NOTE_TIME_MS))));
+                    notes.add(new Note(cursor.getString(cursor.getColumnIndex(COLUMN_NOTE_DATE)), cursor.getString(cursor.getColumnIndex(COLUMN_NOTE_TEXT)), cursor.getLong(cursor.getColumnIndex(COLUMN_NOTE_TIME_MS))));
                 } while (cursor.moveToNext());
                 cursor.close();
             }
@@ -66,5 +66,14 @@ public class DiaryTable {
 
     public void remove(SQLiteDatabase db, Note note) {
         db.delete(DIARY_TABLE_NAME, COLUMN_NOTE_TIME_MS + "=" + note.getTime(), null);
+    }
+
+    public void update(SQLiteDatabase db, Note editedNote) {
+
+        ContentValues updatedValues = new ContentValues();
+        updatedValues.put(COLUMN_NOTE_TEXT, editedNote.getText());
+        String where = COLUMN_NOTE_TIME_MS + "=" + editedNote.getTime();
+
+        db.update(DIARY_TABLE_NAME, updatedValues, where, null);
     }
 }

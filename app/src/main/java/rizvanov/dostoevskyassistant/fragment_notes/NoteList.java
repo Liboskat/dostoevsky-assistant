@@ -3,6 +3,7 @@ package rizvanov.dostoevskyassistant.fragment_notes;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.sql.Time;
@@ -44,6 +46,7 @@ public class NoteList extends Fragment implements NoteListAdapter.OnEventClickLi
     private SQLiteDatabase db;
     private ImageButton recordingButton;
     protected static final int RESULT_SPEECH = 1;
+    protected static final int RESULT_TEXT = 2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,7 +83,7 @@ public class NoteList extends Fragment implements NoteListAdapter.OnEventClickLi
                     startActivityForResult(intent, RESULT_SPEECH);
                 } catch (ActivityNotFoundException a) {
                     Toast t = Toast.makeText(getContext(),
-                            "Ops! Your device doesn't support Speech to Text",
+                            "Your device doesn't support Speech to Text",
                             Toast.LENGTH_SHORT);
                     t.show();
                 }
@@ -91,8 +94,8 @@ public class NoteList extends Fragment implements NoteListAdapter.OnEventClickLi
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Toast.makeText(getContext(), "aaa", Toast.LENGTH_SHORT).show();
         super.onActivityResult(requestCode, resultCode, data);
-
         switch (requestCode) {
             case RESULT_SPEECH: {
                 if (resultCode == RESULT_OK && null != data) {
@@ -100,27 +103,45 @@ public class NoteList extends Fragment implements NoteListAdapter.OnEventClickLi
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
                     Calendar c = Calendar.getInstance();
-                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd:MM:yyyy");
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd.MM.yyyy");
                     String strDate = sdf.format(c.getTime());
 
                     Note note = new Note(strDate, text.get(0), new Date().getTime());
 
                     notes.add(note);
                     adapter.notifyItemInserted(adapter.getItemCount() - 1);
+
                     diaryTable.insert(db, note);
                 }
                 break;
             }
+            case RESULT_TEXT: {
+                if (resultCode == RESULT_OK && null != data) {
+                    Note editedNote = new Note("", "", 0);
+                    String editedText = "";
+                    if(data.getExtras() != null) {
+                        editedNote = (Note) data.getSerializableExtra(FullNoteActivity.KEY_NOTE);
+                        editedText = data.getStringExtra(FullNoteActivity.KEY_EDITED_TEXT);
+                    }
+                    editedNote.setText(editedText);
+                    diaryTable.update(db, editedNote);
 
+                    notes = diaryTable.getAllNotesFromDb(db);
+                    adapter = new NoteListAdapter(notes, this);
+                    recyclerView.setAdapter(adapter);
+                }
+                break;
+            }
         }
     }
+
 
     @Override
     public void OnEventClick(Note note) {
         Intent intent = new Intent(getActivity(), FullNoteActivity.class);
         intent.putExtra(FullNoteActivity.KEY_NOTE, note);
 
-        getActivity().startActivity(intent);
+        startActivityForResult(intent, RESULT_TEXT);
     }
 
     @Override
