@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import rizvanov.dostoevskyassistant.fragment_epilepsy.EpilepsyFragment;
 import rizvanov.dostoevskyassistant.fragment_notes.NoteList;
 
 /**
@@ -34,7 +35,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
             case 1:
                 return new NoteList();
             case 2:
-                return new NoteList();
+                return new EpilepsyFragment();
             default:
                 return null;
         }

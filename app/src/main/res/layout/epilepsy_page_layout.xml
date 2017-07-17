@@ -15,9 +15,11 @@
             android:text="@string/alert"
             android:textColor="@android:color/black"
             android:textSize="25sp"
-            android:layout_margin="16dp"/>
+            android:layout_margin="16dp"
+            android:layout_toLeftOf="@+id/che"/>
 
         <CheckBox
+            android:id="@+id/checkbox_epilepsy_help_message_confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -47,17 +49,30 @@
             android:layout_margin="16dp"/>
 
         <EditText
-            android:id="@+id/epilepsy_page_phone_number"
+            android:id="@+id/et_epilepsy_helper_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_below="@id/epilepsy_page_number_description"
             android:hint="@string/number_enter"
             android:textSize="20sp"
             android:inputType="phone" />
 
+        <TextView
+            android:id="@+id/tv_epilepsy_helper_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:layout_below="@id/et_epilepsy_helper_number"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"/>
+
         <ImageButton
-            android:id="@+id/epilepsy_page_contacts"
+            android:id="@+id/button_epilepsy_search_in_contacts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/ic_contacts"
@@ -68,10 +83,11 @@
             android:layout_margin="16dp"/>
 
         <View
+            android:id="@+id/view_number_message_separate_line"
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@android:color/black"
-            android:layout_below="@id/epilepsy_page_phone_number"/>
+            android:layout_below="@id/tv_epilepsy_helper_name"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -88,6 +104,7 @@
             android:layout_margin="16dp"/>
 
         <EditText
+            android:id="@+id/et_epilepsy_help_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/epilepsy_page_message_description"
