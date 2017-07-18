@@ -147,5 +147,6 @@ public class NoteList extends Fragment implements NoteListAdapter.OnEventClickLi
     public void OnLongEventClick(Note note) {
         notes.remove(note);
         diaryTable.remove(db, note);
+        adapter.notifyDataSetChanged();
     }
 }
