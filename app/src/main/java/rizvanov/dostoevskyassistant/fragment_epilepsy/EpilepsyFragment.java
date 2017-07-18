@@ -25,6 +25,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import rizvanov.dostoevskyassistant.R;
 
 import static android.app.Activity.RESULT_OK;
@@ -144,9 +147,14 @@ public class EpilepsyFragment extends Fragment {
             Toast.makeText(getContext(), "Заполните поля номера телефона и сообщения", Toast.LENGTH_SHORT).show();
             button.setChecked(false);
         } else {
-            Toast.makeText(getContext(), "Оповещения включены", Toast.LENGTH_SHORT).show();
-            Intent sensorListenerIntent = new Intent(getContext(), SensorListener.class);
-            getActivity().startService(sensorListenerIntent);
+            if (isNumberCorrect(phone)) {
+                Toast.makeText(getContext(), "Оповещения включены", Toast.LENGTH_SHORT).show();
+                Intent sensorListenerIntent = new Intent(getContext(), SensorListener.class);
+                getActivity().startService(sensorListenerIntent);
+            } else {
+                Toast.makeText(getContext(), "Номер - 11-значный набор цифр, начинающийся на +7.", Toast.LENGTH_LONG).show();
+                button.setChecked(false);
+            }
         }
     }
 
@@ -211,6 +219,12 @@ public class EpilepsyFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(Boolean check) {
         checkboxHelpMessagePower.setChecked(check);
+    }
+
+    private boolean isNumberCorrect(String phone) {
+        Pattern p = Pattern.compile("\\+7[0-9]{10}");
+        Matcher m = p.matcher(phone);
+        return m.matches();
     }
 
     private boolean isHelpFieldsEmpty(String phone, String message) {
