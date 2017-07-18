@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/diary_page_element_layout"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@android:color/darker_gray">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="1"
-        android:hint="Дата создания"
+        android:hint="@string/creation_date"
         android:textSize="25sp"
         android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
@@ -23,10 +24,13 @@
         android:maxLines="1"
         android:textSize="20sp"
         android:ellipsize="end"
+        android:hint="@string/description_short"
         android:textColor="@android:color/black"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingStart="16dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:id="@+id/diary_page_element_shorttext"

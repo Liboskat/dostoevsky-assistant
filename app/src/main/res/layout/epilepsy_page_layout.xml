@@ -1,28 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/darker_gray">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/epilepsy_page_phonenumber"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="16dp"
-        android:hint="Номер телефона"
-        android:textSize="30dp"
-        android:maxLines="1"
-        android:textAlignment="center"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/epilepsy_page_messagetext"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/epilepsy_page_phonenumber"
-        android:layout_margin="16dp"
-        android:hint="Текст сообщения для помощника"
-        android:textSize="20dp"/>
+        <TextView
+            android:id="@+id/epilepsy_switch_alert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/alert"
+            android:textColor="@android:color/black"
+            android:textSize="25sp"
+            android:layout_margin="16dp"
+            android:layout_toLeftOf="@+id/che"/>
 
-</RelativeLayout>
+        <CheckBox
+            android:id="@+id/checkbox_epilepsy_help_message_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:theme="@style/MyCheckBox"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/black"
+            android:layout_below="@id/epilepsy_switch_alert"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/epilepsy_page_number_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/message_number"
+            android:textColor="@android:color/black"
+            android:textSize="25sp"
+            android:layout_margin="16dp"/>
+
+        <EditText
+            android:id="@+id/et_epilepsy_helper_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_below="@id/epilepsy_page_number_description"
+            android:hint="@string/number_enter"
+            android:textSize="20sp"
+            android:inputType="phone" />
+
+        <TextView
+            android:id="@+id/tv_epilepsy_helper_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:layout_below="@id/et_epilepsy_helper_number"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"/>
+
+        <ImageButton
+            android:id="@+id/button_epilepsy_search_in_contacts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_contacts"
+            android:background="@android:color/darker_gray"
+            android:layout_below="@id/epilepsy_page_number_description"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="16dp"/>
+
+        <View
+            android:id="@+id/view_number_message_separate_line"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/black"
+            android:layout_below="@id/tv_epilepsy_helper_name"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/epilepsy_page_message_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/alert_message"
+            android:textSize="25sp"
+            android:textColor="@android:color/black"
+            android:layout_margin="16dp"/>
+
+        <EditText
+            android:id="@+id/et_epilepsy_help_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/epilepsy_page_message_description"
+            android:hint="@string/help_begging"
+            android:textSize="20sp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"/>
+    </RelativeLayout>
+
+</LinearLayout>

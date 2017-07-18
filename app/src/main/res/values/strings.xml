@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">DostoevskyAssistant</string>
+    <string name="note_date">Дата записи</string>
+    <string name="note_text">Текст записи дневника</string>
+    <string name="creation_date">Дата создания</string>
+    <string name="description_short">Краткое описание</string>
+    <string name="character_name">Имя персонажа</string>
+    <string name="character_reflection_name">Имя персонажа</string>
+    <string name="char_info">Информация о персонаже</string>
+    <string name="alert">Экстренное оповещение</string>
+    <string name="message_number">Введите номер телефона, на который будет приходить оповещение:</string>
+    <string name="number_enter">Введите номер</string>
+    <string name="alert_message">Сообщение:</string>
+    <string name="help_begging">Просьба о помощи</string>
 </resources>

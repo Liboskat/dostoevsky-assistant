@@ -3,13 +3,49 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/darker_gray">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="@android:color/black"
+        android:padding="16dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_margin="16dp"
+                android:src="@mipmap/ic_backarrow"
+                android:id="@+id/reflection_full_backarrow"/>
+
+            <TextView
+                android:id="@+id/reflections_characterpage_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/character_name"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_centerHorizontal="true"
+                android:layout_toEndOf="@id/reflection_full_backarrow"
+                android:layout_toRightOf="@id/reflection_full_backarrow"
+                android:textSize="25sp" />
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/character_scroll_relativelayout">
 
             <ImageView
@@ -22,17 +58,14 @@
                 android:scaleType="fitCenter"
                 android:id="@+id/character_photo"
                 android:background="@android:color/darker_gray"
-                android:onClick="takePhotoOrGallery"
-                />
-
-
+                android:onClick="takePhotoOrGallery" />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/character_photo"
                 android:id="@+id/character_name"
-                android:hint="Имя персонажа"
+                android:hint="@string/character_reflection_name"
                 android:textAlignment="center"
                 android:maxLines="1"
                 android:textSize="30sp"
