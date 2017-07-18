@@ -75,6 +75,7 @@ public class CommonCharacterActivity extends AppCompatActivity implements Charac
         gson = new Gson();
         this.namePoem = getIntent().getStringExtra("namePoem");
         Log.d(TAG, "namePoem = " + namePoem);
+        this.setTitle(namePoem);
         List<String> list = gson.fromJson(sharedPreferences.getString(namePoem + "ListNames",""),itemsListType);
 
         if(list != null){
@@ -108,7 +109,6 @@ public class CommonCharacterActivity extends AppCompatActivity implements Charac
         editTextSearch.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                editTextSearch.setVisibility(View.INVISIBLE);
                 editTextSearch.setText("");
                 flagSearh = false;
                 if(CommonCharacterActivity.this.getCurrentFocus() != null) {
@@ -118,6 +118,12 @@ public class CommonCharacterActivity extends AppCompatActivity implements Charac
                             CommonCharacterActivity.this.getCurrentFocus().getWindowToken(),
                             InputMethodManager.HIDE_NOT_ALWAYS);
                 }
+             //   InputMethodManager imm = (InputMethodManager)
+             //          getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+             //   if(imm != null){
+             //       imm.toggleSoftInput(0, InputMethodManager.HIDE_IMPLICIT_ONLY);
+             //   }
+                editTextSearch.setVisibility(View.INVISIBLE);
                 return true;
             }
         });
@@ -129,6 +135,11 @@ public class CommonCharacterActivity extends AppCompatActivity implements Charac
 
     public void searchPoem() {
         editTextSearch.setVisibility(View.VISIBLE);
+        InputMethodManager imm = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(imm != null){
+            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+        }
         String nameCharacter =  String.valueOf(editTextSearch.getText());
         if(!nameCharacter.equals("")) {
             if (!flagSearh) {
@@ -186,6 +197,13 @@ public class CommonCharacterActivity extends AppCompatActivity implements Charac
     }
 
     public void addCharacter(View view) {
+        InputMethodManager imm = (InputMethodManager)
+                this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(imm != null){
+            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+            editTextSearch.setText("");
+        }
+        editTextSearch.setVisibility(View.INVISIBLE);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater layoutInflater = getLayoutInflater();
         final View content = layoutInflater.inflate(R.layout.reflections_material_dialog, null);
@@ -206,19 +224,33 @@ public class CommonCharacterActivity extends AppCompatActivity implements Charac
                         EditText name = (EditText) content.findViewById(R.id.editName);
                         String nameCharacter = String.valueOf(name.getText());
                         Log.d(TAG, nameCharacter);
-                        Character character = new Character("", nameCharacter, "");
-                        String gsonCharacter = gson.toJson(character);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        count++;
-                        Log.d(TAG, count + "");
-                        character.setId(namePoem + "Character" + count);
-                        idCharsNames.add(character.getId());
-                        editor.putString(character.getId(), gsonCharacter);
-                        editor.putString(namePoem + "countChar", String.valueOf(count));
-                        editor.apply();
-                        characters.add(0, character);
-                        completeCharacter(character, 0);
-                        alertDialog.dismiss();
+                        boolean flagHasCharacter = false;
+                       for(Character character : characters){
+                           if(nameCharacter.equals(character.getName())){
+                               flagHasCharacter = true;
+                               break;
+                           }
+                       }
+                       if (flagHasCharacter) {
+                           Toast.makeText(getApplicationContext(), "Такое название уже есть,введите другое или удалите существующее", Toast.LENGTH_LONG).show();
+                           name.setText(nameCharacter);
+                           alertDialog.dismiss();
+                           alertDialog.show();
+                       }else {
+                            Character character = new Character("", nameCharacter, "");
+                            String gsonCharacter = gson.toJson(character);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            count++;
+                            Log.d(TAG, count + "");
+                            character.setId(namePoem + "Character" + count);
+                            idCharsNames.add(character.getId());
+                            editor.putString(character.getId(), gsonCharacter);
+                            editor.putString(namePoem + "countChar", String.valueOf(count));
+                            editor.apply();
+                            characters.add(0, character);
+                            completeCharacter(character, 0);
+                            alertDialog.dismiss();
+                        }
                         break;
                     case R.id.btnCancel:
                         alertDialog.dismiss();
@@ -260,6 +292,8 @@ public class CommonCharacterActivity extends AppCompatActivity implements Charac
         this.position = position;
         Log.d(TAG, "Complete_position = " + position + "^" + character.getName());
         Intent intent = new Intent(this, CharacterFull.class);
+        editTextSearch.setText("");
+        editTextSearch.setVisibility(View.GONE);
         String gsonCharacter = gson.toJson(character);
         Log.d(TAG, "CompleteChar = " + character.getId());
         intent.putExtra("character", gsonCharacter);
@@ -267,12 +301,28 @@ public class CommonCharacterActivity extends AppCompatActivity implements Charac
         intent.putExtra("listNames",listNames);
         intent.putExtra("namePoem",namePoem);
         this.position = position;
+
+       //InputMethodManager imm = (InputMethodManager)
+       //        getSystemService(Context.INPUT_METHOD_SERVICE);
+       //if(imm != null){
+       //    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+       //}
+
         startActivity(intent);
 
     }
 
     @Override
     public boolean changeCharacter(final int adapterPosition) {
+      // InputMethodManager imm = (InputMethodManager)
+      //         this.getSystemService(Context.INPUT_METHOD_SERVICE);
+      // if(imm != null){
+      //     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+      //     editTextSearch.setText("");
+      // }
+      // editTextSearch.setVisibility(View.INVISIBLE);
+        editTextSearch.setText("");
+        editTextSearch.setVisibility(View.GONE);
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater layoutInflater = getLayoutInflater();
         final View content = layoutInflater.inflate(R.layout.reflections_dialog_change, null);
@@ -315,7 +365,7 @@ public class CommonCharacterActivity extends AppCompatActivity implements Charac
         builder.setView(contentForEditName);
         final AlertDialog alertDialog = builder.create();
         TextView tv_alert = (TextView)contentForEditName.findViewById(R.id.tv_alert_dialog);
-        tv_alert.setText("Название произведения");
+        tv_alert.setText("Название персонажа");
         final EditText[] name = {(EditText) contentForEditName.findViewById(R.id.editName)};
         String title = characters.get(adapterPosition).getName();
         name[0].setText(title);
@@ -328,18 +378,33 @@ public class CommonCharacterActivity extends AppCompatActivity implements Charac
                     case R.id.btnOK:
                         name[0] = (EditText) contentForEditName.findViewById(R.id.editName);
                         String characterName = String.valueOf(name[0].getText());
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        Log.d(TAG,"ChangeCharacterAdPos = " + adapterPosition);
-                        characters.get(adapterPosition).setName(characterName);
-                        String jsonNewName = gson.toJson(characters.get(adapterPosition));
-                        editor.putString(nameId,jsonNewName);
-                        editor.apply();
-                        Log.d(TAG,"changed quests.size = " + characters.size());
-                        recyclerView.setAdapter(adapter);
-                        recyclerView.setLayoutManager(layoutManager);
-                        alertDialog.dismiss();
+                        boolean flagHasCharacter = false;
+                        for(Character character : characters){
+                            if(characterName.equals(character.getName())){
+                                flagHasCharacter = true;
+                                break;
+                            }
+                        }
+                        if (flagHasCharacter) {
+                            Toast.makeText(getApplicationContext(), "Такое название уже есть,введите другое или удалите существующее", Toast.LENGTH_LONG).show();
+                            name[0].setText(characterName);
+                            name[0].setSelection(characterName.length());
+                            alertDialog.dismiss();
+                            alertDialog.show();
+                        }else {
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            Log.d(TAG, "ChangeCharacterAdPos = " + adapterPosition);
+                            characters.get(adapterPosition).setName(characterName);
+                            String jsonNewName = gson.toJson(characters.get(adapterPosition));
+                            editor.putString(nameId, jsonNewName);
+                            editor.apply();
+                            Log.d(TAG, "changed quests.size = " + characters.size());
+                            recyclerView.setAdapter(adapter);
+                            recyclerView.setLayoutManager(layoutManager);
+                            alertDialog.dismiss();
+                        }
+                            break;
 
-                        break;
                     case R.id.btnCancel:
                         alertDialog.dismiss();
                 }

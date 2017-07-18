@@ -72,7 +72,7 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
         SharedPreferences sPref = this.getActivity().getSharedPreferences(FILE_POEMS,MODE_PRIVATE);
         itemsListType = new TypeToken<List<String>>() {}.getType();
         gson = new Gson();
-
+        this.getActivity().setTitle("Произведения");
         List<String> list = gson.fromJson(sPref.getString(FILE_LIST_NAMES,""),itemsListType);
         if(list != null){
             idPoemNames = new LinkedList<>(list);
@@ -165,6 +165,11 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
     public void searchPoem() {
         editTextSearch.setVisibility(View.VISIBLE);
         String namePoem = String.valueOf(editTextSearch.getText());
+        InputMethodManager imm = (InputMethodManager)
+                this.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(imm != null){
+            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+        }
         if(!namePoem.equals("")) {
             if (!flagSearh) {
                 editTextSearch.setSelection(namePoem.length());
@@ -195,6 +200,14 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
 
 
     public void addPoem() {
+     //  InputMethodManager imm = (InputMethodManager)
+     //          this.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+     //  if(imm != null){
+     //      imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+     //      editTextSearch.setText("");
+     //  }
+        editTextSearch.setText("");
+        editTextSearch.setVisibility(View.GONE);
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
         final View content = layoutInflater.inflate(R.layout.reflections_material_dialog, null);
@@ -265,6 +278,14 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
 
     @Override
     public void openPageCharacter(String title) {
+        editTextSearch.setText("");
+        editTextSearch.setVisibility(View.GONE);
+        //InputMethodManager imm = (InputMethodManager)
+        //        this.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        //if(imm != null){
+        //    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+        //    editTextSearch.setText("");
+        //}
         Intent intent = new Intent(PoemsFragment.this.getActivity(),CommonCharacterActivity.class);
         intent.putExtra("namePoem",title);
         startActivity(intent);
@@ -272,6 +293,14 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
 
     @Override
     public boolean changePoem(final int adapterPosition) {
+       // InputMethodManager imm = (InputMethodManager)
+       //         this.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+       // if(imm != null){
+       //     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+       //     editTextSearch.setText("");
+       // }
+        editTextSearch.setText("");
+        editTextSearch.setVisibility(View.GONE);
         final AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
         final View content = layoutInflater.inflate(R.layout.reflections_dialog_change, null);
@@ -330,6 +359,7 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
                         if (idPoemNames.contains(namePoem)) {
                             Toast.makeText(getContext(), "Такое название уже есть,введите другое или удалите существующее", Toast.LENGTH_LONG).show();
                             name[0].setText(namePoem);
+                            name[0].setSelection(namePoem.length());
                             alertDialog.dismiss();
                             alertDialog.show();
                         }else {
