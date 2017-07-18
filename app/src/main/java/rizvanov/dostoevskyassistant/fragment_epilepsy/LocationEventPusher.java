@@ -1,114 +1,131 @@
 package rizvanov.dostoevskyassistant.fragment_epilepsy;
 
+import android.Manifest;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 
 import java.util.Date;
 
-public class LocationEventPusher extends Service{
+public class LocationEventPusher extends Service implements LocationListener {
 
-    public final static String LOCATION_GPS_DATA_PREF = "location_gps_data_pref";
-    public final static String LOCATION_NETWORK_DATA_PREF = "location_network_data_pref";
+    private static final long MIN_DISTANCE_UPDATE = 1;
+    private static final long MIN_TIME_BW_UPDATES = 5000;
 
-    private SharedPreferences sharedPreferences;
+    private Context context;
+
+    private boolean isNetworkEnabled = false;
+    private boolean isGPSEnabled = false;
+    private boolean canGetLocation = false;
+
+    private Location location;
+    private double latitude;
+    private double longitude;
+
     private LocationManager locationManager;
 
-    private LocationListener locationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(Location location) {
-            saveCurrentLocation(location);
-        }
+    public LocationEventPusher() {
+    }
 
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle bundle) {
-        }
+    public LocationEventPusher(Context context) {
+        this.context = context;
+        getLocation();
+    }
 
-        @Override
-        public void onProviderEnabled(String provider) {
-            try {
-                saveCurrentLocation(locationManager.getLastKnownLocation(provider));
-            } catch (SecurityException e) {
-                e.printStackTrace();
+    private Location getLocation() {
+        locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+
+        isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        boolean check1 = ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED;
+        boolean check2 = ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED;
+        if (check1 && check2) {
+            return null;
+        }
+        if (isNetworkEnabled || isGPSEnabled) {
+            canGetLocation = true;
+            if (isNetworkEnabled) {
+                locationManager.requestLocationUpdates(
+                        LocationManager.NETWORK_PROVIDER,
+                        MIN_TIME_BW_UPDATES,
+                        MIN_DISTANCE_UPDATE,
+                        this
+                );
+                if (locationManager != null) {
+                    location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    if (location != null) {
+                        latitude = location.getLatitude();
+                        longitude = location.getLongitude();
+                    }
+                }
+            }
+            if (isGPSEnabled) {
+                locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,
+                        MIN_TIME_BW_UPDATES,
+                        MIN_DISTANCE_UPDATE,
+                        this
+                );
+                if (locationManager != null) {
+                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    if (location != null) {
+                        latitude = location.getLatitude();
+                        longitude = location.getLongitude();
+                    }
+                }
             }
         }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-        }
-    };
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        sharedPreferences = getSharedPreferences(EpilepsyFragment.PREF_TAG, MODE_PRIVATE);
-        try {
-            locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
-                    1000 * 10,
-                    10,
-                    locationListener
-            );
-            locationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER,
-                    1000 * 10,
-                    10,
-                    locationListener
-            );
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        locationManager.removeUpdates(locationListener);
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent, flags, startId);
-    }
-
-    private void saveCurrentLocation(Location location) {
-        if (location == null) {
-            return;
-        }
-        if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
-            saveStringDataByKey(LOCATION_GPS_DATA_PREF, formatLocation(location));
-        } else if (location.getProvider().equals(LocationManager.NETWORK_PROVIDER)) {
-            saveStringDataByKey(LOCATION_NETWORK_DATA_PREF, formatLocation(location));
-        }
-    }
-
-    private String formatLocation(Location location) {
-        if (location == null)
-            return "";
-        return String.format(
-                "Координаты: Ширина = %1$.4f, Долгота = %2$.4f, Время = %3$tF %3$tT",
-                location.getLatitude(),
-                location.getLongitude(),
-                new Date(location.getTime())
-        );
-    }
-
-    private void saveStringDataByKey(String key, String value) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(key, value);
-        editor.apply();
+        return location;
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        this.location = location;
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {}
+
+    @Override
+    public void onProviderEnabled(String s) {}
+
+    @Override
+    public void onProviderDisabled(String s) {}
+
+    private String formatLocation(Location location) {
+        if (location == null)
+            return "";
+        return String.format(
+                "Coordinates: lat = %1$.4f, lon = %2$.4f, time = %3$tF %3$tT",
+                location.getLatitude(), location.getLongitude(), new Date(
+                        location.getTime()));
+    }
+
+    public String getCoordinates() {
+        return formatLocation(location);
+    }
+
+    public boolean canGetLocation() {
+        return canGetLocation;
+    }
+
+    public void stopUsingLocationTracker() {
+        if (locationManager != null) {
+            locationManager.removeUpdates(LocationEventPusher.this);
+        }
     }
 }

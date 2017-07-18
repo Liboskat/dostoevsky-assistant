@@ -13,7 +13,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.location.LocationManager;
 import android.media.RingtoneManager;
 import android.os.Handler;
 import android.os.IBinder;
@@ -25,6 +24,11 @@ import android.support.v4.app.TaskStackBuilder;
 
 import rizvanov.dostoevskyassistant.MainActivity;
 import rizvanov.dostoevskyassistant.R;
+
+/**
+ * Special thanks for sharing https://nosemaj.org/android-persistent-sensors
+ * and his project https://github.com/jamesonwilliams/AndroidPersistentSensors
+ */
 
 public class SensorListener extends Service implements SensorEventListener {
 
@@ -45,7 +49,6 @@ public class SensorListener extends Service implements SensorEventListener {
     private UpdateCheckboxTask updateCheckboxTask;
 
     private SharedPreferences sharedPreferences;
-
 
     private long lastUpdate;
     private int timeSum;
@@ -150,13 +153,11 @@ public class SensorListener extends Service implements SensorEventListener {
         startForeground(Process.myPid(), buildForegroundNotification());
         registerListener();
         wakeLock.acquire();
-        startLocationService();
         return START_STICKY;
     }
 
     private void stopSensorListener() {
         saveBooleanDataByKey(EpilepsyFragment.HELP_POWER_KEY, false);
-        stopLocationService();
         if (getBooleanByKey(IS_APP_RUN)) {
             updateCheckboxTask.execute();
         } else {
@@ -165,9 +166,8 @@ public class SensorListener extends Service implements SensorEventListener {
     }
 
     private void sendSMS() {
-        String locationGPS = getStringByKey(LocationEventPusher.LOCATION_GPS_DATA_PREF);
-        String locationNetwork = getStringByKey(LocationEventPusher.LOCATION_NETWORK_DATA_PREF);
-        String message = getStringByKey(HELP_MESSAGE_KEY);
+        String coord = getCoordinatesByLocationListener();
+        String message = getStringByKey(HELP_MESSAGE_KEY) + "\n" + coord;
         String phoneNumber = getStringByKey(HELP_NUMBER_KEY);
         int i = 0;
         /*SmsManager.getDefault().sendTextMessage(
@@ -179,14 +179,14 @@ public class SensorListener extends Service implements SensorEventListener {
         );*/
     }
 
-    private void startLocationService() {
-        Intent locationListenerIntent = new Intent(this, LocationEventPusher.class);
-        startService(locationListenerIntent);
-    }
-
-    private void stopLocationService() {
-        Intent locationListenerIntent = new Intent(this, LocationEventPusher.class);
-        stopService(locationListenerIntent);
+    private String getCoordinatesByLocationListener() {
+        LocationEventPusher locationTracker = new LocationEventPusher(getApplicationContext());
+        String coord = "";
+        if (locationTracker.canGetLocation()) {
+            coord = locationTracker.getCoordinates();
+        }
+        locationTracker.stopUsingLocationTracker();
+        return coord;
     }
 
     private void setupBuildSmsNotification() {
