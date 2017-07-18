@@ -144,7 +144,7 @@ public class EpilepsyFragment extends Fragment {
             Toast.makeText(getContext(), "Заполните поля номера телефона и сообщения", Toast.LENGTH_SHORT).show();
             button.setChecked(false);
         } else {
-            Toast.makeText(getContext(), "Emergency system turned on", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Оповещения включены", Toast.LENGTH_SHORT).show();
             Intent sensorListenerIntent = new Intent(getContext(), SensorListener.class);
             getActivity().startService(sensorListenerIntent);
         }
@@ -152,7 +152,7 @@ public class EpilepsyFragment extends Fragment {
 
     private void stopShakeListener() {
         Intent sensorListenerIntent = new Intent(getContext(), SensorListener.class);
-        Toast.makeText(getContext(), "Emergency system turned off", Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), "Оповещения выключены", Toast.LENGTH_LONG).show();
         getActivity().stopService(sensorListenerIntent);
     }
 

@@ -13,6 +13,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.LocationManager;
 import android.media.RingtoneManager;
 import android.os.Handler;
 import android.os.IBinder;
@@ -41,9 +42,10 @@ public class SensorListener extends Service implements SensorEventListener {
     private SensorManager sensorManager = null;
     private PowerManager.WakeLock wakeLock = null;
     private NotificationManager notificationManager;
+    private UpdateCheckboxTask updateCheckboxTask;
+
     private SharedPreferences sharedPreferences;
 
-    private UpdateCheckboxTask updateCheckboxTask;
 
     private long lastUpdate;
     private int timeSum;
@@ -148,22 +150,26 @@ public class SensorListener extends Service implements SensorEventListener {
         startForeground(Process.myPid(), buildForegroundNotification());
         registerListener();
         wakeLock.acquire();
+        startLocationService();
         return START_STICKY;
     }
 
     private void stopSensorListener() {
         saveBooleanDataByKey(EpilepsyFragment.HELP_POWER_KEY, false);
+        stopLocationService();
         if (getBooleanByKey(IS_APP_RUN)) {
             updateCheckboxTask.execute();
         } else {
             stopSelf();
         }
-
     }
 
     private void sendSMS() {
-        String message = sharedPreferences.getString(HELP_MESSAGE_KEY, "");
-        String phoneNumber = sharedPreferences.getString(HELP_NUMBER_KEY, "");
+        String locationGPS = getStringByKey(LocationEventPusher.LOCATION_GPS_DATA_PREF);
+        String locationNetwork = getStringByKey(LocationEventPusher.LOCATION_NETWORK_DATA_PREF);
+        String message = getStringByKey(HELP_MESSAGE_KEY);
+        String phoneNumber = getStringByKey(HELP_NUMBER_KEY);
+        int i = 0;
         /*SmsManager.getDefault().sendTextMessage(
                 phoneNumber,
                 null,
@@ -171,6 +177,16 @@ public class SensorListener extends Service implements SensorEventListener {
                 null,
                 null
         );*/
+    }
+
+    private void startLocationService() {
+        Intent locationListenerIntent = new Intent(this, LocationEventPusher.class);
+        startService(locationListenerIntent);
+    }
+
+    private void stopLocationService() {
+        Intent locationListenerIntent = new Intent(this, LocationEventPusher.class);
+        stopService(locationListenerIntent);
     }
 
     private void setupBuildSmsNotification() {
@@ -219,6 +235,10 @@ public class SensorListener extends Service implements SensorEventListener {
 
         return (x * x + y * y + z * z)
                 /(SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
+    }
+
+    private String getStringByKey(String key) {
+        return sharedPreferences.getString(key, "");
     }
 
     private boolean getBooleanByKey(String key) {

@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <uses-feature android:name="android.hardware.camera" />
 
@@ -41,6 +42,8 @@
         <activity android:name=".fragment_notes.FullNoteActivity" />
 
         <service android:name=".fragment_epilepsy.SensorListener"/>
+
+        <service android:name=".fragment_epilepsy.LocationEventPusher"/>
     </application>
 
 </manifest>
