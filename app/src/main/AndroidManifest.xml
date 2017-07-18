@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="rizvanov.dostoevskyassistant"
-    android:installLocation="preferExternal">
+    package="rizvanov.dostoevskyassistant">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-feature android:name="android.hardware.camera" />
+
+    <uses-permission android:name="android.permission.CAMERA"/>
+
 
     <application
         android:allowBackup="true"
@@ -17,8 +23,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CharacterFragment.CommonCharacterActivity"></activity>
-        <activity android:name=".CharacterFragment.CharacterFull"></activity>
+        <activity android:name=".character_fragment.CommonCharacterActivity"></activity>
+        <activity android:name=".character_fragment.CharacterFull"></activity>
     </application>
 
 </manifest>

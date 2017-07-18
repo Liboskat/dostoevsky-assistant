@@ -1,6 +1,7 @@
-package rizvanov.dostoevskyassistant.CharacterFragment;
+package rizvanov.dostoevskyassistant.character_fragment;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +18,10 @@ import rizvanov.dostoevskyassistant.R;
 
 public class PoemsAdapter  extends RecyclerView.Adapter<PoemsAdapter.PoemViewHolder> {
 
-    public List<Poem> quests;
-    PoemsPageOnClickListener poemsPageOnClickListener;
+    private  List<Poem> quests;
+    private PoemsPageOnClickListener poemsPageOnClickListener;
+
+    private static final String TAG = "myLogs";
 
     public PoemsAdapter(List<Poem> quests,PoemsPageOnClickListener poemsPageOnClickListener){
 
@@ -48,23 +51,34 @@ public class PoemsAdapter  extends RecyclerView.Adapter<PoemsAdapter.PoemViewHol
     }
 
     @Override
-    public void onBindViewHolder(PoemViewHolder holder, int position) {
-        Poem quest = quests.get(position);
+    public void onBindViewHolder(final PoemViewHolder holder, int position) {
+        final String title  = quests.get(position).getTitle();
+        Log.d(TAG,"title = " + title);
 
-        holder.titleTextView.setText(quest.getTitle());
-       holder.relativePageLayout.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               switch (view.getId()){
-                   case R.id.relative_page_layout:
-                       poemsPageOnClickListener.openPageCharacter();
-                       break;
-                   default:
-                       break;
-               }
-           }
-       });
+        holder.titleTextView.setText(title);
+        holder.relativePageLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (view.getId()) {
+                    case R.id.relative_page_layout:
+                        poemsPageOnClickListener.openPageCharacter(title);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+        holder.relativePageLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+
+                return poemsPageOnClickListener.changePoem(holder.getAdapterPosition());
+
+            }
+        });
+
     }
+
 
     @Override
     public int getItemCount() {
@@ -73,6 +87,8 @@ public class PoemsAdapter  extends RecyclerView.Adapter<PoemsAdapter.PoemViewHol
 
     public interface PoemsPageOnClickListener{
 
-        void openPageCharacter();
+        void openPageCharacter(String title);
+
+        boolean changePoem(int adapterPosition);
     }
 }

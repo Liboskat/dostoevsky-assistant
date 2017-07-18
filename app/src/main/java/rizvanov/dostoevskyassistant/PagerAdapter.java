@@ -1,29 +1,28 @@
 package rizvanov.dostoevskyassistant;
 
-import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import rizvanov.dostoevskyassistant.CharacterFragment.PoemsFragment;
+import rizvanov.dostoevskyassistant.character_fragment.PoemsFragment;
 import rizvanov.dostoevskyassistant.fragment_notes.NotesList;
 
 /**
  * Created by Ильшат on 11.07.2017.
  */
 
-public class Pager extends FragmentStatePagerAdapter {
+public class PagerAdapter extends FragmentStatePagerAdapter {
 
     //integer to count number of tabs
-    int tabCount;
-    private Activity activity;
+    private int tabCount;
+    //Titles for pager's tabs
+    private String[] tabsTitles = new String[] {"Tab 1", "Tab 2", "Tab 3"};
 
     //Constructor to the class
-    public Pager(FragmentManager fm, Activity activity) {
+    public PagerAdapter(FragmentManager fm) {
         super(fm);
         //Initializing tab count
         this.tabCount= 3;
-        this.activity = activity;
     }
 
     //Overriding method getItem
@@ -32,14 +31,11 @@ public class Pager extends FragmentStatePagerAdapter {
         //Returning the current tabs
         switch (position) {
             case 0:
-                PoemsFragment tab1 = new PoemsFragment(); //образы
-                return tab1;
+                return new PoemsFragment(); //образы
             case 1:
-                NotesList tab2 = new NotesList(); //
-                return tab2;
+                return new NotesList();
             case 2:
-                NotesList tab3 = new NotesList(); //эпилепсия
-                return tab3;
+                return new NotesList();
             default:
                 return null;
         }
@@ -49,5 +45,11 @@ public class Pager extends FragmentStatePagerAdapter {
     @Override
     public int getCount() {
         return tabCount;
+    }
+
+    //Set tabs' titles
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return tabsTitles[position];
     }
 }

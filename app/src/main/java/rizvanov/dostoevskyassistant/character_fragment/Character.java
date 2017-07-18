@@ -1,4 +1,4 @@
-package rizvanov.dostoevskyassistant.CharacterFragment;
+package rizvanov.dostoevskyassistant.character_fragment;
 
 /**
  * Created by user on 14.07.2017.
@@ -9,6 +9,7 @@ public class Character {
     private String photo;
     private String name;
     private String editText;
+    private String id;
 
     public Character(String photo, String name, String editText) {
         this.photo = photo;
@@ -40,4 +41,11 @@ public class Character {
         this.editText = editText;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }

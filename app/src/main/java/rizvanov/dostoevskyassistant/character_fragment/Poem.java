@@ -1,4 +1,4 @@
-package rizvanov.dostoevskyassistant.CharacterFragment;
+package rizvanov.dostoevskyassistant.character_fragment;
 
 /**
  * Created by user on 14.07.2017.
@@ -20,4 +20,5 @@ public class Poem {
     public void setTitle(String title) {
         this.title = title;
     }
+
 }

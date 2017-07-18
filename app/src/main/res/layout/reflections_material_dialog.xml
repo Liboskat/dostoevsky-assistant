@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:gravity="center"
+        android:textSize="30sp"
+        android:id="@+id/tv_alert_dialog"
+        android:layout_margin="16dp"/>
+
+    <EditText
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="16dp"
+        android:id="@+id/editName"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OK"
+        android:layout_margin="16dp"
+        android:textSize="20sp"
+        android:id="@+id/btnOK"
+        android:layout_alignParentLeft="true"
+        android:padding="16dp"
+        android:layout_alignBaseline="@+id/btnCancel"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnCancel"
+        android:layout_margin="16dp"
+        android:textSize="20sp"
+        android:padding="16dp"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/btnOK"
+        android:text="Cancel"
+        />
+    </RelativeLayout>
+
+</LinearLayout>

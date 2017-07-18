@@ -1,4 +1,4 @@
-package rizvanov.dostoevskyassistant.CharacterFragment;
+package rizvanov.dostoevskyassistant.character_fragment;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,9 +17,9 @@ import rizvanov.dostoevskyassistant.R;
 
 public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.CharacterViewHolder> {
 
-    public List<Character> characters;
+    private List<Character> characters;
 
-    CharacterOnClickListener characterOnClickListener;
+    private CharacterOnClickListener characterOnClickListener;
 
     public CharacterAdapter(List<Character> quests,CharacterOnClickListener characterOnClickListener){
 
@@ -49,18 +49,27 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.Char
     }
 
     @Override
-    public void onBindViewHolder(final CharacterViewHolder holder, int position) {
-        Character character = characters.get(position);
+    public void onBindViewHolder(final CharacterViewHolder holder, final int position) {
+        final Character character = characters.get(position);
 
         holder.nameOfCharacter.setText(character.getName());
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                characterOnClickListener.completeCharacter(characters.get(holder.getAdapterPosition()));
+                characterOnClickListener.completeCharacter(characters.get(holder.getAdapterPosition()),holder.getAdapterPosition());
 
             }
         });
+        holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+
+                return characterOnClickListener.changeCharacter(holder.getAdapterPosition());
+
+            }
+        });
+
     }
 
     @Override
@@ -69,8 +78,10 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.Char
     }
 
     public interface CharacterOnClickListener{
-        void completeCharacter(Character character);
 
+        void completeCharacter(Character character, int position);
+
+        boolean changeCharacter(int adapterPosition);
     }
 }
 
