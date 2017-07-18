@@ -28,6 +28,7 @@ public class FullNoteActivity extends AppCompatActivity{
             note = (Note) getIntent().getExtras().getSerializable(KEY_NOTE);
         }
 
+        this.setTitle("Заметка от " + note.getDate());
         text.setText(note.getText());
     }
 
