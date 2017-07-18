@@ -186,9 +186,9 @@ public class SensorListener extends Service implements SensorEventListener {
         );
 
         Notification notification = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
-                .setContentTitle("SMS was sent")
-                .setContentText("Emergency messages turned off")
+                .setSmallIcon(R.drawable.ic_notification_off)
+                .setContentTitle("Сообщение было отправлено.")
+                .setContentText("Служба оповещений отключена! ")
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setAutoCancel(true)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
@@ -200,9 +200,9 @@ public class SensorListener extends Service implements SensorEventListener {
 
     private Notification buildForegroundNotification() {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
-        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher_round);
-        notificationBuilder.setContentTitle("Service was started");
-        notificationBuilder.setContentText("Emergency messages created");
+        notificationBuilder.setSmallIcon(R.drawable.ic_service_on);
+        notificationBuilder.setContentTitle("Экстраоповещения активны!");
+        notificationBuilder.setContentText("");
         return notificationBuilder.build();
     }
 
