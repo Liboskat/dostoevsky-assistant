@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/relative_poem_layout"
     android:background="@android:color/darker_gray">
     <ScrollView
         android:layout_width="match_parent"
@@ -20,12 +21,41 @@
     </ScrollView>
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/reflections_page_addbutton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/reflections_page_add_button"
         android:src="@mipmap/ic_addbutton"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
         android:background="@android:color/black" />
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@android:color/white"
+        android:id="@+id/reflections_page_search_button"
+        android:src="@mipmap/search"
+        android:scaleType="fitCenter"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_alignTop="@+id/reflections_page_add_button"
+        android:layout_toLeftOf="@+id/reflections_page_add_button"
+        android:layout_marginEnd="14dp">
+    </ImageButton>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="25sp"
+        android:id="@+id/reflections_page_search_edit"
+        android:layout_toLeftOf="@+id/reflections_page_search_button"
+        android:hint="название"
+        android:textAlignment="center"
+        android:visibility="invisible"
+        android:textColor="@android:color/black"
+        android:background="@android:color/white"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_alignTop="@+id/reflections_page_search_button" />
 </RelativeLayout>

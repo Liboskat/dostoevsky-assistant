@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Изменить/Удалить "
+        android:id="@+id/reflection_change_dialog"
+        android:textSize="20sp"
+        android:layout_margin="16dp"
+        android:padding="16dp"
+        />
+    <Button
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:text="Изменить"
+        android:id="@+id/reflection_change_btn"
+        android:layout_toLeftOf="@+id/reflection_delete_btn"
+
+        android:layout_marginRight="20dp"
+        android:layout_alignLeft="@+id/reflection_change_dialog"
+        android:layout_below="@+id/reflection_change_dialog"
+        />
+
+    <Button
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:text="Удалить"
+        android:layout_below="@+id/reflection_change_dialog"
+        android:id="@+id/reflection_delete_btn"
+        android:layout_alignRight="@+id/reflection_change_dialog"
+        />
+
+</RelativeLayout>
