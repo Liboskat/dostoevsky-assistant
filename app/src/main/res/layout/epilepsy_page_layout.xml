@@ -58,6 +58,7 @@
             android:layout_below="@id/epilepsy_page_number_description"
             android:hint="@string/number_enter"
             android:textSize="20sp"
+            android:textColor="@android:color/black"
             android:inputType="phone" />
 
         <TextView
@@ -110,6 +111,7 @@
             android:layout_below="@id/epilepsy_page_message_description"
             android:hint="@string/help_begging"
             android:textSize="20sp"
+            android:textColor="@android:color/black"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"/>
     </RelativeLayout>

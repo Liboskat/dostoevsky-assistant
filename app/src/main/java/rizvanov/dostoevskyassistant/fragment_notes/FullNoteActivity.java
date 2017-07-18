@@ -24,8 +24,6 @@ public class FullNoteActivity extends AppCompatActivity{
         setContentView(R.layout.diary_element_full_layout);
 
         text = (EditText) findViewById(R.id.diary_element_full_text);
-        date = (TextView) findViewById(R.id.diary_element_full_title);
-        backArrow = (ImageView) findViewById(R.id.diary_element_full_backarrow);
 
         backArrow.setOnClickListener(new View.OnClickListener(){
             @Override
