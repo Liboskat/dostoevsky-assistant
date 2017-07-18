@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="rizvanov.dostoevskyassistant">
+    package="rizvanov.dostoevskyassistant"
+    android:installLocation="preferExternal">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
@@ -17,16 +18,18 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/DarkTheme">
 
         <activity
             android:name=".MainActivity"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/SplashTheme"
+            android:screenOrientation="portrait">
         </activity>
 
         <activity
             android:name=".splashscreen_activity.SplashScreenActivity"
-            android:theme="@style/SplashTheme"
+            android:theme="@style/SplashTheme.Image"
+            android:screenOrientation="portrait"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,11 +38,17 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".character_fragment.CommonCharacterActivity" />
+        <activity android:name=".character_fragment.CommonCharacterActivity"
+            android:theme="@style/DarkTheme"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".character_fragment.CharacterFull" />
+        <activity android:name=".character_fragment.CharacterFull"
+            android:theme="@style/DarkTheme"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".fragment_notes.FullNoteActivity" />
+        <activity android:name=".fragment_notes.FullNoteActivity"
+            android:theme="@style/DarkTheme"
+            android:screenOrientation="portrait"/>
 
         <service android:name=".fragment_epilepsy.SensorListener"/>
 

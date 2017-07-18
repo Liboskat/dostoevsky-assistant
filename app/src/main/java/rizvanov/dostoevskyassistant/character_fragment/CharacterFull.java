@@ -1,5 +1,6 @@
 package rizvanov.dostoevskyassistant.character_fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -14,6 +15,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -33,7 +35,7 @@ public class CharacterFull extends AppCompatActivity {
     private static final String TAG = "TAG";
     private ImageView photo;
     private EditText name;
-    private EditText editText;
+    private EditText description;
 
     private Character character;
     private String lastName;
@@ -51,7 +53,7 @@ public class CharacterFull extends AppCompatActivity {
 
     boolean flagImage = false;//сделано ли фото
     boolean nameClicked = true;
-    boolean editClicked = true;
+    boolean descriptionClicked = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,57 +63,83 @@ public class CharacterFull extends AppCompatActivity {
 
         photo = (ImageView) findViewById(R.id.character_photo);
         name = (EditText) findViewById(R.id.character_name);
-        editText = (EditText) findViewById(R.id.character_edit);
+        disabledEditText(name);
+
+        name.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if(!nameClicked) {
+                    enabledEditText(name);
+                }else {
+                    disabledEditText(name);
+                }
+                return true;
+            }
+        });
+
+
+
+        description = (EditText) findViewById(R.id.character_edit);
+        disabledEditText(description);
+
+        description.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if(!descriptionClicked) {
+                    enabledEditText(description);
+                }else {
+                    disabledEditText(description);
+                }
+                return true;
+            }
+        });
 
         lastName = String.valueOf(name.getText());
-        lastEdit = String.valueOf(editText.getText());
+        lastEdit = String.valueOf(description.getText());
         createDirectory();
         Intent intent = getIntent();
         gson = new Gson();
         sharedPreferences = getSharedPreferences(FILE_CHARACTERS,MODE_PRIVATE);
 
-       //changeEditClick(name,nameClicked);
-       //changeEditClick(editText,editClicked);
-       //name.setOnLongClickListener(new View.OnLongClickListener() {
-       //    @Override
-       //    public boolean onLongClick(View view) {
-       //        changeEditClick(name,nameClicked);
-       //        return true;
-       //    }
-       //});
-       //editText.setOnLongClickListener(new View.OnLongClickListener() {
-       //    @Override
-       //    public boolean onLongClick(View view) {
-       //        changeEditClick(editText,editClicked);
-       //        return true;
-       //    }
-       //});
-
         loadText(intent);
+        this.setTitle(name.getText());
+
 
     }
 
-  //  public void changeEditClick(EditText editT, boolean clicked){
-  //      if(clicked){
-  //        editT.setFocusable(false);
-  //          editT.setClickable(false);
-  //        editT.setCursorVisible(false);
-  //          if(editT.equals(name)) {
-  //              nameClicked = false;
-  //          }else{
-  //              editClicked = false;
-  //          }
-  //      }else{
-  //          editT.setFocusable(true);
-  //          editT.setClickable(true);
-  //          editT.setCursorVisible(true);
-  //          if(editT.equals(name)) {
-  //              nameClicked = true;
-  //          }else{
-  //              editClicked = true;
-  //          }
-  //      }
-  //  }
+    private void enabledEditText(EditText editText) {
+        editText.setFocusable(true);
+        editText.setFocusableInTouchMode(true);
+        editText.setClickable(true);
+        if(editText.equals(name)) {
+            nameClicked = true;
+        } else {
+            descriptionClicked = true;
+        }
+        InputMethodManager imm = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(imm != null){
+            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+        }
+
+    }
+
+    private void disabledEditText(EditText editText){
+        editText.setFocusable(false);
+        editText.setFocusableInTouchMode(false);
+        editText.setClickable(false);
+        if(editText.equals(name)) {
+            nameClicked = false;
+        } else {
+            descriptionClicked = false;
+        }
+        InputMethodManager imm = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(imm != null){
+            imm.toggleSoftInput(0, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        }
+
+    }
 
     public void takePhotoOrGallery(View view){
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -213,9 +241,9 @@ public class CharacterFull extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        Log.d(TAG, "OnResume save");
+        Log.d(TAG, "OnPause save");
         if (!lastName.equals(String.valueOf(name.getText()))
-                || !lastEdit.equals(String.valueOf(editText.getText()))) {
+                || !lastEdit.equals(String.valueOf(description.getText()))) {
             saveText();
         }
 
@@ -250,7 +278,7 @@ public class CharacterFull extends AppCompatActivity {
         Log.d(TAG,"CharacterSaveName = " + character.getName());
         character.setName(String.valueOf(name.getText()));
         Log.d(TAG,"CharacterSaveNameNEW = " + character.getName());
-        character.setEditText(String.valueOf(editText.getText()));
+        character.setEditText(String.valueOf(description.getText()));
         String gsonCharacter = gson.toJson(character);
         Log.d(TAG,"CharacterFull _ id = " + character.getId());
         CommonCharacterActivity.id = character.getId();
@@ -273,8 +301,8 @@ public class CharacterFull extends AppCompatActivity {
         Log.d(TAG,character.getId());
         name.setText(character.getName());
         name.setSelection(character.getName().length());
-        editText.setText(character.getEditText());
-        editText.setSelection(character.getEditText().length());
+        description.setText(character.getEditText());
+        description.setSelection(character.getEditText().length());
         String photoStr = character.getPhoto();
 
         if (!photoStr.equalsIgnoreCase("")) {
@@ -282,7 +310,7 @@ public class CharacterFull extends AppCompatActivity {
             setPic(false);
         }
         else{
-            photo.setImageResource(R.mipmap.rascol);
+            photo.setImageResource(R.mipmap.ic_addphoto);
         }
 
     }

@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -9,6 +9,10 @@
     </style>
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorAccent">@android:color/black</item>
+    </style>
+
+    <style name="SplashTheme.Image" parent="SplashTheme" >
         <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
 
@@ -16,5 +20,11 @@
         <item name="colorControlNormal">@android:color/black</item>
         <item name="colorControlActivated">@android:color/black</item>
     </style>
+
+    <style name="DarkTheme" parent="Theme.AppCompat.Light.DarkActionBar" >
+        <item name="android:colorBackground">@android:color/darker_gray</item>
+        <item name="colorAccent">@android:color/black</item>
+    </style>
+
 
 </resources>
