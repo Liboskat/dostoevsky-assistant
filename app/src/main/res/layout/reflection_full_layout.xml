@@ -9,42 +9,42 @@
         android:layout_height="match_parent">
 
         <RelativeLayout
+            android:id="@+id/character_scroll_relativelayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/character_scroll_relativelayout">
+            android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="320dp"
-                android:layout_height="320dp"
+                android:id="@+id/character_photo"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_centerHorizontal="true"
                 android:layout_gravity="top"
                 android:layout_margin="16dp"
-                android:layout_centerHorizontal="true"
-                android:src="@mipmap/rascol"
-                android:scaleType="fitCenter"
-                android:id="@+id/character_photo"
                 android:background="@android:color/darker_gray"
-                android:onClick="takePhotoOrGallery" />
+                android:onClick="takePhotoOrGallery"
+                android:scaleType="fitCenter"
+                android:src="@mipmap/ic_addphoto" />
 
             <EditText
+                android:id="@+id/character_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/character_photo"
-                android:id="@+id/character_name"
                 android:hint="@string/character_reflection_name"
-                android:textAlignment="center"
                 android:maxLines="1"
-                android:textSize="30sp"
-                android:textColor="@android:color/black"/>
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="30sp" />
 
             <EditText
+                android:id="@+id/character_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/character_name"
                 android:layout_margin="16dp"
-                android:id="@+id/character_edit"
                 android:hint="Описание"
                 android:textColor="@android:color/black"
-                android:textSize="25sp"/>
+                android:textSize="25sp" />
         </RelativeLayout>
 
     </ScrollView>

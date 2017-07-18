@@ -17,7 +17,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     //integer to count number of tabs
     private int tabCount;
     //Titles for pager's tabs
-    private String[] tabsTitles = new String[] {"Tab 1", "Tab 2", "Tab 3"};
+    private String[] tabsTitles = new String[] {"Образы", "Дневник", "Эпилепсия"};
 
     //Constructor to the class
     public PagerAdapter(FragmentManager fm) {

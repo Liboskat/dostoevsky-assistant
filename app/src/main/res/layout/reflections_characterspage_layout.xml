@@ -29,8 +29,8 @@
         android:background="@android:color/black" />
 
     <ImageButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@android:color/black"
         android:id="@+id/reflections_page_search_button"
         android:src="@mipmap/ic_search"

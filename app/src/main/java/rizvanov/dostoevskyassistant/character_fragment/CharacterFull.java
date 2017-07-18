@@ -282,7 +282,7 @@ public class CharacterFull extends AppCompatActivity {
             setPic(false);
         }
         else{
-            photo.setImageResource(R.mipmap.rascol);
+            photo.setImageResource(R.mipmap.ic_addphoto);
         }
 
     }
