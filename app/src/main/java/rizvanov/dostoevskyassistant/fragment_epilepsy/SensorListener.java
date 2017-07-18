@@ -25,6 +25,11 @@ import android.support.v4.app.TaskStackBuilder;
 import rizvanov.dostoevskyassistant.MainActivity;
 import rizvanov.dostoevskyassistant.R;
 
+/**
+ * Special thanks for sharing https://nosemaj.org/android-persistent-sensors
+ * and his project https://github.com/jamesonwilliams/AndroidPersistentSensors
+ */
+
 public class SensorListener extends Service implements SensorEventListener {
 
 
@@ -41,9 +46,9 @@ public class SensorListener extends Service implements SensorEventListener {
     private SensorManager sensorManager = null;
     private PowerManager.WakeLock wakeLock = null;
     private NotificationManager notificationManager;
-    private SharedPreferences sharedPreferences;
-
     private UpdateCheckboxTask updateCheckboxTask;
+
+    private SharedPreferences sharedPreferences;
 
     private long lastUpdate;
     private int timeSum;
@@ -158,12 +163,13 @@ public class SensorListener extends Service implements SensorEventListener {
         } else {
             stopSelf();
         }
-
     }
 
     private void sendSMS() {
-        String message = sharedPreferences.getString(HELP_MESSAGE_KEY, "");
-        String phoneNumber = sharedPreferences.getString(HELP_NUMBER_KEY, "");
+        String coord = getCoordinatesByLocationListener();
+        String message = getStringByKey(HELP_MESSAGE_KEY) + "\n" + coord;
+        String phoneNumber = getStringByKey(HELP_NUMBER_KEY);
+        int i = 0;
         /*SmsManager.getDefault().sendTextMessage(
                 phoneNumber,
                 null,
@@ -171,6 +177,16 @@ public class SensorListener extends Service implements SensorEventListener {
                 null,
                 null
         );*/
+    }
+
+    private String getCoordinatesByLocationListener() {
+        LocationEventPusher locationTracker = new LocationEventPusher(getApplicationContext());
+        String coord = "";
+        if (locationTracker.canGetLocation()) {
+            coord = locationTracker.getCoordinates();
+        }
+        locationTracker.stopUsingLocationTracker();
+        return coord;
     }
 
     private void setupBuildSmsNotification() {
@@ -219,6 +235,10 @@ public class SensorListener extends Service implements SensorEventListener {
 
         return (x * x + y * y + z * z)
                 /(SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
+    }
+
+    private String getStringByKey(String key) {
+        return sharedPreferences.getString(key, "");
     }
 
     private boolean getBooleanByKey(String key) {
