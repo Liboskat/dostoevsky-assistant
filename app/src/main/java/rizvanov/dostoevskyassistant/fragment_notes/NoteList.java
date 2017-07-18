@@ -4,12 +4,14 @@ package rizvanov.dostoevskyassistant.fragment_notes;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -144,8 +146,32 @@ public class NoteList extends Fragment implements NoteListAdapter.OnEventClickLi
     }
 
     @Override
-    public void OnLongEventClick(Note note) {
-        notes.remove(note);
-        diaryTable.remove(db, note);
+    public void OnLongEventClick(final Note note) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Удаление заметки");
+        builder.setMessage("Вы точно хотите удалить заметку?");
+
+        String positiveText = "Да";
+        builder.setPositiveButton(positiveText,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        notes.remove(note);
+                        diaryTable.remove(db, note);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+
+        String negativeText = "Нет";
+        builder.setNegativeButton(negativeText,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
     }
 }
