@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import rizvanov.dostoevskyassistant.character_fragment.PoemsFragment;
 import rizvanov.dostoevskyassistant.fragment_epilepsy.EpilepsyFragment;
 import rizvanov.dostoevskyassistant.fragment_notes.NoteList;
 
@@ -31,7 +32,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         //Returning the current tabs
         switch (position) {
             case 0:
-                return new NoteList();
+                return new PoemsFragment(); //образы
             case 1:
                 return new NoteList();
             case 2:
