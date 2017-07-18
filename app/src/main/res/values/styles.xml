@@ -8,7 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar"></style>
+
+    <style name="SplashTheme.Image" parent="SplashTheme" >
         <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
 
@@ -21,5 +23,6 @@
         <item name="android:colorBackground">@android:color/darker_gray</item>
         <item name="colorAccent">@android:color/black</item>
     </style>
+
 
 </resources>

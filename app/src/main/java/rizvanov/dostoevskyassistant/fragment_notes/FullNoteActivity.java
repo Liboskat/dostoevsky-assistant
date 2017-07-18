@@ -15,8 +15,6 @@ public class FullNoteActivity extends AppCompatActivity{
     public static final String KEY_EDITED_TEXT = "edited_text";
     private EditText text;
     private Note note;
-    private ImageView backArrow;
-    private TextView date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,20 +23,12 @@ public class FullNoteActivity extends AppCompatActivity{
 
         text = (EditText) findViewById(R.id.diary_element_full_text);
 
-        backArrow.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                FullNoteActivity.this.finish();
-            }
-        });
-
         note = new Note("", "", 0);
         if(getIntent().getExtras() != null) {
             note = (Note) getIntent().getExtras().getSerializable(KEY_NOTE);
         }
 
         text.setText(note.getText());
-        date.setText(note.getDate());
     }
 
    public void finish() {

@@ -20,12 +20,14 @@
 
         <activity
             android:name=".MainActivity"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/SplashTheme"
+            android:screenOrientation="portrait">
         </activity>
 
         <activity
             android:name=".splashscreen_activity.SplashScreenActivity"
-            android:theme="@style/SplashTheme"
+            android:theme="@style/SplashTheme.Image"
+            android:screenOrientation="portrait"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,13 +36,17 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".character_fragment.CommonCharacterActivity" />
+        <activity android:name=".character_fragment.CommonCharacterActivity"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".character_fragment.CharacterFull" />
+        <activity android:name=".character_fragment.CharacterFull"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".fragment_notes.FullNoteActivity" />
+        <activity android:name=".fragment_notes.FullNoteActivity"
+            android:screenOrientation="portrait"/>
 
-        <service android:name=".fragment_epilepsy.SensorListener" />
+        <service android:name=".fragment_epilepsy.SensorListener"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
