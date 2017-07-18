@@ -65,7 +65,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteVi
             @Override
             public boolean onLongClick(View v) {
                 listener.OnLongEventClick(notes.get(holder.getAdapterPosition()));
-                return false;
+                return true;
             }
         });
     }
