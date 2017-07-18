@@ -72,7 +72,6 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
         SharedPreferences sPref = this.getActivity().getSharedPreferences(FILE_POEMS,MODE_PRIVATE);
         itemsListType = new TypeToken<List<String>>() {}.getType();
         gson = new Gson();
-        this.getActivity().setTitle("Произведения");
         List<String> list = gson.fromJson(sPref.getString(FILE_LIST_NAMES,""),itemsListType);
         if(list != null){
             idPoemNames = new LinkedList<>(list);
