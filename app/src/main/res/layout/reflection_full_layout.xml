@@ -4,80 +4,47 @@
     android:layout_height="match_parent"
     android:background="@android:color/darker_gray">
 
-    <android.support.v7.widget.Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:background="@android:color/black"
-        android:padding="16dp">
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-
-            <ImageButton
-                android:layout_width="50dp"
-                android:layout_height="30dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:layout_margin="16dp"
-                android:src="@mipmap/ic_backarrow"
-                android:id="@+id/reflection_full_backarrow"/>
-
-            <TextView
-                android:id="@+id/reflections_characterpage_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/character_name"
-                android:layout_marginBottom="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_centerHorizontal="true"
-                android:layout_toEndOf="@id/reflection_full_backarrow"
-                android:layout_toRightOf="@id/reflection_full_backarrow"
-                android:textSize="25sp" />
-        </RelativeLayout>
-
-    </android.support.v7.widget.Toolbar>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <RelativeLayout
+            android:id="@+id/character_scroll_relativelayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/character_scroll_relativelayout">
+            android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="320dp"
-                android:layout_height="400dp"
+                android:id="@+id/character_photo"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_centerHorizontal="true"
                 android:layout_gravity="top"
                 android:layout_margin="16dp"
-                android:layout_centerHorizontal="true"
-                android:src="@mipmap/rascol"
-                android:scaleType="fitCenter"
-                android:id="@+id/character_photo"
                 android:background="@android:color/darker_gray"
-                android:onClick="takePhotoOrGallery" />
+                android:onClick="takePhotoOrGallery"
+                android:scaleType="fitCenter"
+                android:src="@mipmap/ic_addphoto" />
 
             <EditText
+                android:id="@+id/character_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/character_photo"
-                android:id="@+id/character_name"
                 android:hint="@string/character_reflection_name"
-                android:textAlignment="center"
                 android:maxLines="1"
-                android:textSize="30sp"
-                android:textColor="@android:color/black"/>
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="30sp" />
 
             <EditText
+                android:id="@+id/character_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/character_name"
                 android:layout_margin="16dp"
-                android:id="@+id/character_edit"
-                android:hint="Описание" />
+                android:hint="Описание"
+                android:textColor="@android:color/black"
+                android:textSize="25sp" />
         </RelativeLayout>
 
     </ScrollView>
