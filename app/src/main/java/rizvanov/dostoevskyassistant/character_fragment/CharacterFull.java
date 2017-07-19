@@ -1,9 +1,11 @@
 package rizvanov.dostoevskyassistant.character_fragment;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -12,18 +14,22 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
 
+import rizvanov.dostoevskyassistant.MainActivity;
 import rizvanov.dostoevskyassistant.R;
 
 /**
@@ -142,6 +148,17 @@ public class CharacterFull extends AppCompatActivity {
     }
 
     public void takePhotoOrGallery(View view){
+        if (checkPermission()) {
+            if (checkRequest()) {
+                Toast.makeText(getApplicationContext(), "Нужно разрешение на использование камеры", Toast.LENGTH_LONG).show();
+            } else {
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[] {Manifest.permission.CAMERA},
+                        1
+                );
+            }
+        }
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         uri = generateFileUri(TYPE_PHOTO);
 
@@ -150,6 +167,14 @@ public class CharacterFull extends AppCompatActivity {
         startActivityForResult(intent, REQUEST_CODE_PHOTO);
     }
 
+    private boolean checkRequest() {
+        return ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA);
+    }
+
+    private boolean checkPermission() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED;
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode,Intent intent) {
