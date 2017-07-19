@@ -1,9 +1,7 @@
 package rizvanov.dostoevskyassistant.character_fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -13,9 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -58,7 +54,6 @@ public class CharacterFull extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); //для портретного режима
         setContentView(R.layout.reflection_full_layout);
 
         photo = (ImageView) findViewById(R.id.character_photo);
@@ -67,7 +62,7 @@ public class CharacterFull extends AppCompatActivity {
 
         name.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onLongClick(View view) {
+            public boolean onLongClick(View view) { // ставим по долгому нажатию блокировку/разблокировку сообщения
                 if(!nameClicked) {
                     enabledEditText(name);
                 }else {
@@ -96,18 +91,19 @@ public class CharacterFull extends AppCompatActivity {
 
         lastName = String.valueOf(name.getText());
         lastEdit = String.valueOf(description.getText());
+
         createDirectory();
         Intent intent = getIntent();
         gson = new Gson();
         sharedPreferences = getSharedPreferences(FILE_CHARACTERS,MODE_PRIVATE);
 
-        loadText(intent);
-        this.setTitle(name.getText());
+        loadText(intent); // загрузить данные
+        this.setTitle(name.getText()); // установить значени имени активити
 
 
     }
 
-    private void enabledEditText(EditText editText) {
+    private void enabledEditText(EditText editText) { //разблокировка для редактирования
         editText.setFocusable(true);
         editText.setFocusableInTouchMode(true);
         editText.setClickable(true);
@@ -116,15 +112,11 @@ public class CharacterFull extends AppCompatActivity {
         } else {
             descriptionClicked = true;
         }
-        InputMethodManager imm = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
-        if(imm != null){
-            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
-        }
+        Helper.showKeyboard(this);
 
     }
 
-    private void disabledEditText(EditText editText){
+    private void disabledEditText(EditText editText){ // блокировка для редактирования
         editText.setFocusable(false);
         editText.setFocusableInTouchMode(false);
         editText.setClickable(false);
@@ -133,18 +125,13 @@ public class CharacterFull extends AppCompatActivity {
         } else {
             descriptionClicked = false;
         }
-        InputMethodManager imm = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
-        if(imm != null){
-            imm.toggleSoftInput(0, InputMethodManager.HIDE_IMPLICIT_ONLY);
-        }
+        Helper.hideKeyboard(this);
 
     }
 
-    public void takePhotoOrGallery(View view){
+    public void takePhotoOrGallery(View view){ // сделать фотографию
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         uri = generateFileUri(TYPE_PHOTO);
-
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         flagImage = true;
         startActivityForResult(intent, REQUEST_CODE_PHOTO);
@@ -155,9 +142,9 @@ public class CharacterFull extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode,Intent intent) {
         if (requestCode == REQUEST_CODE_PHOTO) {
             if (resultCode == RESULT_OK) {
-                setPic(true);
+                setPic(true); // уменьшаем вес изображения
                 String uriStr = uri.getPath();
-                character.setPhoto(uriStr);
+                character.setPhoto(uriStr); // устанавливаем путь к нашему изображению
             }
 
         }
@@ -194,10 +181,10 @@ public class CharacterFull extends AppCompatActivity {
 
         Bitmap bitmap = BitmapFactory.decodeFile(uri.getPath(), bmOptions);
         bitmap = rotateBitmap(bitmap,uri.getPath());
-        photo.setImageBitmap(bitmap);
+        photo.setImageBitmap(bitmap); // устанавливаем изображения в наше ImageView
     }
 
-    public static Bitmap rotateBitmap(Bitmap srcBitmap, String path) {
+    public static Bitmap rotateBitmap(Bitmap srcBitmap, String path) { // изображения будет расположено в портретном режиме(была неисправность)
         ExifInterface exif = null;
         try {
             exif = new ExifInterface(path);
@@ -228,9 +215,8 @@ public class CharacterFull extends AppCompatActivity {
 
 
    @Override
-   protected void onRestart() {
+   protected void onRestart() { // если было сделано фото ,то сохраняем
 
-       Log.d(TAG,"OnRestart save = " + flagImage);
        if(flagImage) {
            saveText();
        }
@@ -240,8 +226,7 @@ public class CharacterFull extends AppCompatActivity {
    }
 
     @Override
-    protected void onPause() {
-        Log.d(TAG, "OnPause save");
+    protected void onPause() { // сохранение,если было изменено одно из editText полей
         if (!lastName.equals(String.valueOf(name.getText()))
                 || !lastEdit.equals(String.valueOf(description.getText()))) {
             saveText();
@@ -258,7 +243,6 @@ public class CharacterFull extends AppCompatActivity {
                         + System.currentTimeMillis() + ".jpg");
                 break;
         }
-        Log.d(TAG, "FILE_CHARACTERS = " + file);
         return Uri.fromFile(file);
     }
 
@@ -272,40 +256,32 @@ public class CharacterFull extends AppCompatActivity {
     }
 
 
-
-    void saveText() {
+    void saveText() { // сохранения обьекта ,сохранения изменений в списке персонажей для произведения
         SharedPreferences.Editor ed = sharedPreferences.edit();
-        Log.d(TAG,"CharacterSaveName = " + character.getName());
         character.setName(String.valueOf(name.getText()));
-        Log.d(TAG,"CharacterSaveNameNEW = " + character.getName());
         character.setEditText(String.valueOf(description.getText()));
         String gsonCharacter = gson.toJson(character);
-        Log.d(TAG,"CharacterFull _ id = " + character.getId());
         CommonCharacterActivity.id = character.getId();
         ed.putString(character.getId(), gsonCharacter);
         String listNames = getIntent().getStringExtra("listNames");
-        Log.d(TAG,"listNames = " + listNames);
         String namePoem = getIntent().getStringExtra("namePoem");
-        Log.d(TAG,namePoem);
         sharedPreferences.edit().putString(namePoem + "ListNames",listNames).apply();
-        Log.d(TAG,"All is good");
         ed.apply();
 
     }
 
 
 
-    void loadText(Intent intent) {
+    void loadText(Intent intent) { // загрузка данных
 
         this.character = gson.fromJson(intent.getStringExtra("character"),Character.class);
-        Log.d(TAG,character.getId());
         name.setText(character.getName());
         name.setSelection(character.getName().length());
         description.setText(character.getEditText());
         description.setSelection(character.getEditText().length());
         String photoStr = character.getPhoto();
 
-        if (!photoStr.equalsIgnoreCase("")) {
+        if (!photoStr.equalsIgnoreCase("")) { // если сделано фото,то загрузить фотографию
             uri = Uri.parse(photoStr);
             setPic(false);
         }

@@ -10,7 +10,6 @@ public class Poem {
 
     public Poem(String title) {
         this.title = title;
-
     }
 
     public String getTitle() {

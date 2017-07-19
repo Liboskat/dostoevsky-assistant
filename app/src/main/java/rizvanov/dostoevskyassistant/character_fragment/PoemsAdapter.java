@@ -1,7 +1,6 @@
 package rizvanov.dostoevskyassistant.character_fragment;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +17,12 @@ import rizvanov.dostoevskyassistant.R;
 
 public class PoemsAdapter  extends RecyclerView.Adapter<PoemsAdapter.PoemViewHolder> {
 
-    private  List<Poem> quests;
+    private  List<Poem> poems;
     private PoemsPageOnClickListener poemsPageOnClickListener;
 
-    private static final String TAG = "myLogs";
+    public PoemsAdapter(List<Poem> poems,PoemsPageOnClickListener poemsPageOnClickListener){
 
-    public PoemsAdapter(List<Poem> quests,PoemsPageOnClickListener poemsPageOnClickListener){
-
-        this.quests = quests;
+        this.poems = poems;
         this.poemsPageOnClickListener = poemsPageOnClickListener;
     }
 
@@ -52,9 +49,7 @@ public class PoemsAdapter  extends RecyclerView.Adapter<PoemsAdapter.PoemViewHol
 
     @Override
     public void onBindViewHolder(final PoemViewHolder holder, int position) {
-        final String title  = quests.get(position).getTitle();
-        Log.d(TAG,"title = " + title);
-
+        final String title  = poems.get(position).getTitle();
         holder.titleTextView.setText(title);
         holder.relativePageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +77,7 @@ public class PoemsAdapter  extends RecyclerView.Adapter<PoemsAdapter.PoemViewHol
 
     @Override
     public int getItemCount() {
-        return quests.size();
+        return poems.size();
     }
 
     public interface PoemsPageOnClickListener{

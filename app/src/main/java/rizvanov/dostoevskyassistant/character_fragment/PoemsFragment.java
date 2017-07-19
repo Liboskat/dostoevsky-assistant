@@ -37,18 +37,17 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOnClickListener {
 
-    private RecyclerView recyclerView;
-    private List<Poem> quests;
+    private RecyclerView recyclerView; // для списка
+    private List<Poem> poems;
     private PoemsAdapter adapter;
     private LinearLayoutManager layoutManager;
 
-    private static int count;
-    private View.OnClickListener onClickListener;
-    private final String FILE_POEMS = "Poems";
+    private View.OnClickListener onClickListener; // слушатель
+    private final String FILE_POEMS = "Poems"; // место сохранения произведений
 
     public static final String TAG = "PoemTAG";
 
-    private Button btnOK;
+    private Button btnOK; // кнопка согласия добавления,изменения
 
     Gson gson;
     private Type itemsListType; // для Gson()
@@ -56,12 +55,10 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
 
     private boolean flagAdded;
     private boolean flagDeleted;
-    private EditText editTextSearch;
+    private EditText editTextSearch; // editText для поиска
     private boolean flagSearh;
 
     private final String FILE_LIST_NAMES = "poemNames";
-    private final String FILE_COUNT_POEMS = "count";
-
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
@@ -69,22 +66,20 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.reflections_page_layout,container,false);
-        SharedPreferences sPref = this.getActivity().getSharedPreferences(FILE_POEMS,MODE_PRIVATE);
+
+        sharedPreferences = this.getActivity().getSharedPreferences(FILE_POEMS,MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+        gson = new Gson(); // загрузка списка с именами произведений
         itemsListType = new TypeToken<List<String>>() {}.getType();
-        gson = new Gson();
-        this.getActivity().setTitle("Произведения");
-        List<String> list = gson.fromJson(sPref.getString(FILE_LIST_NAMES,""),itemsListType);
+        List<String> list = gson.fromJson(sharedPreferences.getString(FILE_LIST_NAMES,""),itemsListType);
         if(list != null){
             idPoemNames = new LinkedList<>(list);
         }else{
             idPoemNames = new LinkedList<>();
         }
-        Log.d(TAG, "idPoemNames.size = " + idPoemNames.size());
-        sharedPreferences = this.getActivity().getSharedPreferences(FILE_POEMS,MODE_PRIVATE);
-        editor = sharedPreferences.edit();
 
-        count = Integer.parseInt(sPref.getString(FILE_COUNT_POEMS,"0"));
-        Log.d(TAG,"poemCount = " + count + "");
+        // добавление слушателя на кнопка add
         ImageButton addBtn = (ImageButton) view.findViewById(R.id.reflections_page_add_button);
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,6 +87,8 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
                 addPoem();
             }
         });
+
+        // добавление слушателя на кнопка search
         ImageButton searchBtn = (ImageButton) view.findViewById(R.id.reflections_page_search_button);
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,19 +97,8 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
             }
         });
 
-
+        //добавления слущателя на editTextSearch , для закрытия keyboard
         editTextSearch = (EditText) view.findViewById(R.id.reflections_page_search_edit);
-     //  editTextSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-     //      @Override
-     //      public void onFocusChange(View view, boolean hasFocused) {
-     //         // if(!hasFocused && editTextSearch.getVisibility() == View.VISIBLE && !flagSearh ){
-     //          if(!hasFocused ){
-     //             // lastSearch = String.valueOf(editTextSearch.getText());
-     //              editTextSearch.setVisibility(View.INVISIBLE);
-     //          }
-     //      }
-     //  });
-
         editTextSearch.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -136,14 +122,13 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d(TAG, "initPoems");
         if (idPoemNames.size() != 0) {
-            initQuests();
+            initPoems();
         } else {
-            quests = new LinkedList<>();
+            poems = new LinkedList<>();
         }
 
-        adapter = new PoemsAdapter(quests,this);
+        adapter = new PoemsAdapter(poems,this);
         layoutManager = new LinearLayoutManager(this.getActivity());
 
         recyclerView = (RecyclerView) view.findViewById(R.id.reflections_page_recyclerview);
@@ -151,47 +136,46 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
         recyclerView.setLayoutManager(layoutManager);
     }
 
-    private void initQuests(){
-        quests = new LinkedList<>();
-        String namePoem = idPoemNames.get(0);
-        Log.d(TAG,"namePoem = " + namePoem);
-        quests.add(0,new Poem(namePoem));
-        for (int i = 1; i < idPoemNames.size(); i++) {
+    private void initPoems() { // инициализация произведений
+        poems = new LinkedList<>();
+        String namePoem;
+        for (int i = 0; i < idPoemNames.size(); i++) {
             namePoem = idPoemNames.get(i);
-            quests.add(0, new Poem(namePoem));
+            poems.add(0, new Poem(namePoem));
         }
 
-}
-    public void searchPoem() {
+    }
+
+
+    public void searchPoem() { // поиск произведения
         editTextSearch.setVisibility(View.VISIBLE);
+        Helper.showKeyboard(this.getActivity()); //показать клавиатуру
+
         String namePoem = String.valueOf(editTextSearch.getText());
-        InputMethodManager imm = (InputMethodManager)
-                this.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if(imm != null){
-            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
-        }
-        if(!namePoem.equals("")) {
-            if (!flagSearh) {
+        String nameForSearch = namePoem.toLowerCase().trim();
+
+        if(!namePoem.equals("")) { // осущесвлять ли поиск,или отобразить ввод
+            if (!flagSearh) { // если не найдено,то сохраняем позицию
                 editTextSearch.setSelection(namePoem.length());
                 flagSearh = true;
-            } else {
+            } else {            // если уже было нажато,то проверим
                 boolean flagFind = false;
-                for (int i = 0; !flagFind && i < quests.size(); i++) {
-                    if (namePoem.equals(quests.get(i).getTitle())) {
+                for (int i = 0; !flagFind && i < poems.size(); i++) {
+                    if (nameForSearch.equals(poems.get(i).getTitle().toLowerCase().trim())) { // осуществляем поиск
                         flagFind = true;
-                        editTextSearch.setVisibility(View.INVISIBLE);
+
                         editTextSearch.setText("");
                     }
                 }
+                editTextSearch.setVisibility(View.INVISIBLE);
                 if(flagFind){
-                    openPageCharacter(namePoem);
+                    openPageCharacter(namePoem); // если поиск успешен,открываем страницу
                 }
-                flagSearh = true;
-                if (!flagFind) {
-                    editTextSearch.setVisibility(View.INVISIBLE);
+                if (!flagFind) { // иначе
                     Toast.makeText(getContext(), "Произведение не найдено", Toast.LENGTH_SHORT).show();
                     editTextSearch.setVisibility(View.VISIBLE);
                 }
+                flagSearh = true;
             }
         }
 
@@ -200,30 +184,25 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
 
 
     public void addPoem() {
-     //  InputMethodManager imm = (InputMethodManager)
-     //          this.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-     //  if(imm != null){
-     //      imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-     //      editTextSearch.setText("");
-     //  }
-        editTextSearch.setText("");
-        editTextSearch.setVisibility(View.GONE);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
-        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-        final View content = layoutInflater.inflate(R.layout.reflections_material_dialog, null);
-        builder.setView(content);
+        Helper.setVisibilityGone(editTextSearch);
+
+        final View content = getActivity().getLayoutInflater().inflate(R.layout.reflections_material_dialog, null);
+
         btnOK = (Button) content.findViewById(R.id.btnOK);
         Button btnCancel = (Button) content.findViewById(R.id.btnCancel);
 
-        final AlertDialog alertDialog = builder.create();
+        final AlertDialog alertDialog = Helper.createDialog(getActivity(),content);
+
         TextView tv_alert = (TextView)content.findViewById(R.id.tv_alert_dialog);
         tv_alert.setText("Название произведения");
+
         alertDialog.show();
         onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 switch (view.getId()){
                     case R.id.btnOK:
+
                         String namePoem = "";
                         EditText name = (EditText) content.findViewById(R.id.editName);
                         namePoem = String.valueOf(name.getText());
@@ -233,20 +212,17 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
                             alertDialog.dismiss();
                             alertDialog.show();
                         }else {
-                            count++;
                             idPoemNames.add(namePoem);
                             flagAdded = true;
-                            Log.d(TAG, "added count = " + count);
-                            Log.d(TAG, "added namePoem = " + namePoem);
                             String listNames = new Gson().toJson(idPoemNames);
-                            Log.d(TAG, "ADD idPoemNames.size = " + idPoemNames.size());
+
                             editor.putString(FILE_LIST_NAMES, listNames).apply();
-                            editor.putString(FILE_COUNT_POEMS, String.valueOf(count));
                             editor.apply();
-                            quests.add(0, new Poem(namePoem));
-                            Log.d(TAG, "quests.size = " + quests.size());
+                            poems.add(0, new Poem(namePoem));
+
                             recyclerView.setAdapter(adapter);
                             recyclerView.setLayoutManager(layoutManager);
+
                             alertDialog.dismiss();
                         }
 
@@ -263,10 +239,6 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
     @Override
     public void onResume() {
         if(flagDeleted || flagAdded){
-            Log.d(TAG,"onResume_idNames.size = " + idPoemNames.size());
-            for(String poemNames : idPoemNames){
-                Log.d(TAG,"OnResume_poemNmaes = " + poemNames);
-            }
             String listNames = gson.toJson(idPoemNames);
             editor.putString(FILE_LIST_NAMES,listNames).apply();
 
@@ -278,14 +250,8 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
 
     @Override
     public void openPageCharacter(String title) {
-        editTextSearch.setText("");
-        editTextSearch.setVisibility(View.GONE);
-        //InputMethodManager imm = (InputMethodManager)
-        //        this.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        //if(imm != null){
-        //    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-        //    editTextSearch.setText("");
-        //}
+        Helper.setVisibilityGone(editTextSearch);
+
         Intent intent = new Intent(PoemsFragment.this.getActivity(),CommonCharacterActivity.class);
         intent.putExtra("namePoem",title);
         startActivity(intent);
@@ -293,35 +259,25 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
 
     @Override
     public boolean changePoem(final int adapterPosition) {
-       // InputMethodManager imm = (InputMethodManager)
-       //         this.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-       // if(imm != null){
-       //     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-       //     editTextSearch.setText("");
-       // }
-        editTextSearch.setText("");
-        editTextSearch.setVisibility(View.GONE);
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
-        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-        final View content = layoutInflater.inflate(R.layout.reflections_dialog_change, null);
-        builder.setView(content);
-        Log.d(TAG,"ChangeAdPos = " + adapterPosition);
+        Helper.setVisibilityGone(editTextSearch);
+
+        final View content = getActivity().getLayoutInflater().inflate(R.layout.reflections_dialog_change, null);
+
         Button btnChange = (Button) content.findViewById(R.id.reflection_change_btn);
         Button btnDelete = (Button) content.findViewById(R.id.reflection_delete_btn);
-        Log.d(TAG,"ChangePoem");
-        final AlertDialog alertDialog = builder.create();
-        final View contentForEditName = layoutInflater.inflate(R.layout.reflections_material_dialog, null);
-        final String namePoem = quests.get(adapterPosition).getTitle();
-        Log.d(TAG,"currentNamePoem = " + namePoem);
-        TextView tv_change_alert = (TextView) content.findViewById(R.id.reflection_change_dialog);
-        tv_change_alert.setText(tv_change_alert.getText() + namePoem + " ?");
+
+        final AlertDialog alertDialog = Helper.createDialog(getActivity(),content);;
+        final View contentForEditName = getActivity().getLayoutInflater().inflate(R.layout.reflections_material_dialog, null);
+
+        final String namePoem = poems.get(adapterPosition).getTitle();
+
         alertDialog.show();
         onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 switch (view.getId()) {
                     case R.id.reflection_change_btn:
-                        changeNamePoem(builder,contentForEditName,adapterPosition,namePoem);
+                        changeNamePoem(contentForEditName,adapterPosition,namePoem);
                         alertDialog.dismiss();
                         break;
                     case R.id.reflection_delete_btn:
@@ -335,17 +291,19 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
         return true;
     }
 
-    public void changeNamePoem(AlertDialog.Builder builder, final View contentForEditName, final int adapterPosition, String namePoem){
+    public void changeNamePoem(final View contentForEditName, final int adapterPosition, String namePoem){
         btnOK = (Button) contentForEditName.findViewById(R.id.btnOK);
         Button btnCancel = (Button) contentForEditName.findViewById(R.id.btnCancel);
-        Log.d(TAG,"changeNamePoem");
-        builder.setView(contentForEditName);
-        final AlertDialog alertDialog = builder.create();
+
+        final AlertDialog alertDialog = Helper.createDialog(getActivity(),contentForEditName);
+
         final String lastName = namePoem;
+
         TextView tv_alert = (TextView)contentForEditName.findViewById(R.id.tv_alert_dialog);
         tv_alert.setText("Название произведения");
+
         final EditText[] name = {(EditText) contentForEditName.findViewById(R.id.editName)};
-        String title = quests.get(adapterPosition).getTitle();
+        String title = poems.get(adapterPosition).getTitle();
         name[0].setText(title);
         name[0].setSelection(title.length());
         alertDialog.show();
@@ -363,20 +321,18 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
                             alertDialog.dismiss();
                             alertDialog.show();
                         }else {
-                            Log.d(TAG, "ChangePoemAdPos = " + adapterPosition);
                             int pos = idPoemNames.indexOf(lastName);
                             idPoemNames.set(pos, namePoem);
                             String listNames = gson.toJson(idPoemNames);
-                            for (String poemNames : idPoemNames) {
-                                Log.d(TAG, "justChanged_poemNames = " + poemNames);
-                            }
+
                             editor.putString("poemNames", listNames);
                             editor.apply();
+
                             changeCharacters(namePoem, lastName);
                             flagAdded = true;
-                            Log.d(TAG, "changed namePoem = " + namePoem);
-                            quests.get(adapterPosition).setTitle(namePoem);
-                            Log.d(TAG, "changed quests.size = " + quests.size());
+
+                            poems.get(adapterPosition).setTitle(namePoem);
+
                             recyclerView.setAdapter(adapter);
                             recyclerView.setLayoutManager(layoutManager);
                             alertDialog.dismiss();
@@ -392,21 +348,19 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
     }
 
 
-    public void deletePoem(int adapterPosition,String namePoem){
+    public void deletePoem(int adapterPosition,String namePoem){ // удаление произведения
 
-        if (quests.size() > 0) {
-            Log.d(TAG, "REMOVE_character" + quests.size());
-            String name = quests.get(adapterPosition).getTitle();
-            if (quests.remove(adapterPosition) != null) {
-                Log.d(TAG, "really deleted = " + name);
+        if (poems.size() > 0) {
+            String name = poems.get(adapterPosition).getTitle();
+            if (poems.remove(adapterPosition) != null) {
                 flagDeleted = true;
                 idPoemNames.remove(name);
                 removeCharacters(name);
                 SharedPreferences sPref = this.getActivity().getSharedPreferences("Characters",MODE_PRIVATE);
                 sPref.edit().remove(namePoem + "countChar").apply();
                 String listNames = new Gson().toJson(idPoemNames);
-                Log.d(TAG,"REMOVE idPoemNames.size = " + idPoemNames.size());
                 editor.putString(FILE_LIST_NAMES,listNames).apply();
+
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(layoutManager);
             }
@@ -414,18 +368,14 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
         }
     }
 
-    private void removeCharacters(String name) {
+    private void removeCharacters(String name) { // удаления названий персонажей произведения
         String fileCharacters = "Characters";
         String fileCharList = name + "ListNames";
         SharedPreferences sPref = this.getActivity().getSharedPreferences(fileCharacters, MODE_PRIVATE);
-        itemsListType = new TypeToken<List<String>>() {}.getType();
-
-        Log.d(TAG, "namePoem = " + name);
         List<String> list = new Gson().fromJson(sPref.getString(fileCharList,""),itemsListType);
 
         if(list != null) {
             List<String> listChars = new LinkedList<>(list);
-            Log.d(TAG, "idPoemNames.size = " + listChars.size());
             for(String nameCharacter : listChars){
                 sPref.edit().remove(nameCharacter).apply();
             }
@@ -433,37 +383,30 @@ public class PoemsFragment  extends Fragment implements PoemsAdapter.PoemsPageOn
 
         }
 
-
     }
 
-    public void changeCharacters(String newName, String lastName){
+    public void changeCharacters(String newName, String lastName){ // изменение id персонажей
         String fileCharacters = "Characters";
         SharedPreferences sPref = this.getActivity().getSharedPreferences(fileCharacters, MODE_PRIVATE);
-        itemsListType = new TypeToken<List<String>>() {}.getType();
 
-        Log.d(TAG, "namePoem = " + newName);
         List<String> list = gson.fromJson(sPref.getString(lastName + "ListNames",""),itemsListType);
-        Log.d(TAG,"changeCharacters");
         if(list != null) {
             List<String> listCharacters = new LinkedList<>(list);
-            Log.d(TAG, "idCharactersNames.size = " + listCharacters.size());
             List<String> newCharacters = new LinkedList<>();
             Character character;
             for(String nameCharacter : listCharacters){
-                Log.d(TAG,"currentNameCharacter = " + nameCharacter);
                 character = gson.fromJson(sPref.getString(nameCharacter,""),Character.class);
                 String suffix = nameCharacter.substring(lastName.length(),nameCharacter.length());
                 Log.d(TAG, nameCharacter + "_suffix = " + suffix);
                 character.setId(newName + suffix);
                 newCharacters.add(newName + suffix);
+
                 String jsonChar = gson.toJson(character);
                 sPref.edit().remove(nameCharacter).apply();
                 sPref.edit().putString(character.getId(),jsonChar).apply();
             }
             sPref.edit().remove(lastName + "ListNames").apply();
-            String count = sPref.getString(lastName + "countChar","0");
             sPref.edit().remove(lastName + "countChar").apply();
-            sPref.edit().putString(newName + count,count).apply();
             String listChar = gson.toJson(newCharacters);
             sPref.edit().putString(newName + "ListNames",listChar).apply();
         }

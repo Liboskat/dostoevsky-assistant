@@ -6,10 +6,10 @@ package rizvanov.dostoevskyassistant.character_fragment;
 
 public class Character {
 
-    private String photo;
+    private String photo; // uri.getPath от сделанного фото
     private String name;
     private String editText;
-    private String id;
+    private String id; // id персонажа
 
     public Character(String photo, String name, String editText) {
         this.photo = photo;
