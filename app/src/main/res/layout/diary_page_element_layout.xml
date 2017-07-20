@@ -10,11 +10,11 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:hint="@string/creation_date"
-        android:textSize="25sp"
+        android:textSize="16sp"
         android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:id="@+id/diary_page_element_creationdate"/>
 
     <TextView

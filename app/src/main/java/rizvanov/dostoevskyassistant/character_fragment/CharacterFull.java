@@ -2,24 +2,26 @@ package rizvanov.dostoevskyassistant.character_fragment;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.EditText;
+import android.widget.ImageView;
+import com.google.gson.Gson;
+import java.io.File;
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-
-import com.google.gson.Gson;
-
-import java.io.File;
+import android.widget.Toast;
 import java.io.IOException;
-
 import rizvanov.dostoevskyassistant.R;
 
 /**
@@ -130,6 +132,17 @@ public class CharacterFull extends AppCompatActivity {
     }
 
     public void takePhotoOrGallery(View view){ // сделать фотографию
+        if (checkPermission()) {
+            if (checkRequest()) {
+                Toast.makeText(getApplicationContext(), "Нужно разрешение на использование камеры", Toast.LENGTH_LONG).show();
+            } else {
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[] {Manifest.permission.CAMERA},
+                        1
+                );
+            }
+        }
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         uri = generateFileUri(TYPE_PHOTO);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
@@ -137,6 +150,14 @@ public class CharacterFull extends AppCompatActivity {
         startActivityForResult(intent, REQUEST_CODE_PHOTO);
     }
 
+    private boolean checkRequest() {
+        return ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA);
+    }
+
+    private boolean checkPermission() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED;
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode,Intent intent) {
@@ -269,8 +290,6 @@ public class CharacterFull extends AppCompatActivity {
         ed.apply();
 
     }
-
-
 
     void loadText(Intent intent) { // загрузка данных
 
